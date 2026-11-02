@@ -182,7 +182,7 @@ select{font:inherit;color:var(--ink);-webkit-text-fill-color:var(--ink);opacity:
 @media (max-width:380px){.ribbon h2{font-size:1.02rem}}
 
 
-.cowsay{position:absolute;left:44%;top:9%;max-width:40%;font-size:.88rem;background:#fff;border:2.5px solid var(--line);border-radius:18px;padding:6px 12px;font-family:var(--display);font-weight:800;font-size:1rem;line-height:1.15;color:var(--ink);box-shadow:0 4px 0 var(--line);transform:scale(0);transform-origin:0% 100%;transition:transform .18s ease-out;pointer-events:none;z-index:3}
+.cowsay{position:absolute;left:max(53%,188px);top:4%;max-width:min(44%,calc(100% - 196px));font-size:.88rem;background:#fff;border:2.5px solid var(--line);border-radius:18px;padding:6px 12px;font-family:var(--display);font-weight:800;font-size:1rem;line-height:1.15;color:var(--ink);box-shadow:0 4px 0 var(--line);transform:scale(0);transform-origin:0% 100%;transition:transform .18s ease-out;pointer-events:none;z-index:3}
 .cowsay::after{content:"";position:absolute;left:10px;bottom:-11px;border:9px solid transparent;border-top-color:var(--line);border-bottom:0}
 .cowsay.show{transform:scale(1)}
 .moo{opacity:0}.shades{opacity:0;transition:opacity .2s}
@@ -1005,7 +1005,6 @@ function renderHisaab(){
     const rows=[["Raj Dairy — "+shop()+" — "+MON[m-1]+" "+y],[],["Tareekh","Subah (L)","Shaam (L)","Kul (L)","Rate (Rs/L)","Rakam (Rs)","Paisa mila (Rs)","Note"]];
     let d2=c.first;while(d2<=c.last){const e=S.entries[d2];if(e&&d2>=START){const L=litres(e),r=rateFor(d2);rows.push([fmtS(d2),e.no?0:e.s,e.no?0:e.e,L,r,Math.round(L*r),e.p||0,e.no?"Supply nahi":""])}d2=addDays(d2,1)}
     rows.push([],["Kul doodh (L)",Math.round(c.kul*1000)/1000],["Is mahine ki rakam",Math.round(c.amt)],["Pichhla baaki",Math.round(c.prev)],["Paisa mila",Math.round(c.paid)],["Baaki",Math.round(c.baaki)]);
-    const ex2=expensesIn(c.first,c.last);if(ex2.list.length){rows.push([],["Kharcha"],["Tareekh","Type","Kis gaay","Note","Rs"]);ex2.list.slice().reverse().forEach(x=>rows.push([fmtS(x.date),TYPES[x.type]||"Loan kisht",x.type==="farm"||x.type==="loan"?"":cowName(x.cow||"all"),x.note||"",x.amt]))}
     const csv="\uFEFF"+rows.map(r=>r.map(q).join(",")).join("\r\n");
     try{await S.dl.save({filename:`RajDairy_${MON[m-1]}_${y}.csv`,data:csv});toast("✔ Excel file save ho gayi")}
     catch(x){toast(x&&x.code==="declined"?"Save nahi kiya":"File save nahi hui")}
@@ -1292,7 +1291,7 @@ function cowSheet(id){
     <div class="row2"><div class="field"><label for="eBuy">Kab li</label><input id="eBuy" type="date" value="${c.buy||""}" max="${today()}"></div><div class="field"><label for="ePrice">Kitne me (₹)</label><input id="ePrice" inputmode="numeric" value="${c.price||0}"></div></div>
     <div class="field"><label for="eKind">Jaanwar</label><select id="eKind"><option value="gaay" ${c.kind!=="bhains"?"selected":""}>Gaay</option><option value="bhains" ${c.kind==="bhains"?"selected":""}>Bhains</option></select></div>
     <button class="chunk green" id="eSave">Badlav save karo</button>
-    ${c.end?`<button class="chunk" id="eBack">Gaay wapas jodo</button>`:`<button class="chunk red" id="eEnd">Gaay hatao (bech di / nahi rahi)</button>`}
+    ${c.end?`<p class="small" style="margin:0">${fmtS(c.end)} ko hatai${c.sale?` · ${rs(c.sale)} me bechi`:""}</p><button class="chunk" id="eBack">Gaay wapas jodo</button>`:`<div class="row2"><div class="field"><label for="eEndD">Kab hatai</label><input id="eEndD" type="date" value="${today()}" min="${c.buy||""}" max="${today()}"></div><div class="field"><label for="eSale">Bechi to kitne me (₹)</label><input id="eSale" inputmode="numeric" placeholder="nahi rahi to 0"></div></div><button class="chunk red" id="eEnd">Gaay hatao (bech di / nahi rahi)</button>`}
     <button class="link" id="eDel">Galti se judi thi — poori mita do</button></div></details>
    <p class="err" id="kErr"></p>
    <button class="toggle bigbtn" id="kClose">Band karo</button>`,el=>{
@@ -1307,8 +1306,11 @@ function cowSheet(id){
     el.querySelector("#kClose").onclick=closeSheet;
     el.querySelector("#eSave").onclick=()=>{const n=el.querySelector("#eName").value.trim(),bd=el.querySelector("#eBuy").value,p=num(el.querySelector("#ePrice").value);
       if(!n){er.textContent="Naam likho";return}if(p===null||isNaN(p)){er.textContent="Paisa sirf number";return}save({name:n,buy:bd||c.buy,price:p,kind:el.querySelector("#eKind").value},"✔ Save ho gaya")};
-    const eb=el.querySelector("#eEnd");if(eb)eb.onclick=()=>{if(eb.dataset.sure){save({end:today()},"Gaay hata di")}else{eb.dataset.sure=1;eb.textContent="Pakka? Phir se dabao"}};
-    const bk=el.querySelector("#eBack");if(bk)bk.onclick=()=>save({end:null},"Gaay wapas jud gayi");
+    const si=el.querySelector("#eSale");if(si)si.addEventListener("input",()=>{si.value=si.value.replace(/[^0-9]/g,"")});
+    const eb=el.querySelector("#eEnd");if(eb)eb.onclick=()=>{const d=el.querySelector("#eEndD").value,sp=num(el.querySelector("#eSale").value)||0;
+      if(!d||d>today()||(c.buy&&d<c.buy)){er.textContent="Sahi tareekh chuno (kharid ke baad, aaj tak)";return}
+      if(eb.dataset.sure){save({end:d,sale:sp},sp?`Gaay ${rs(sp)} me bechi — likh diya`:"Gaay hata di")}else{eb.dataset.sure=1;eb.textContent="Pakka? Phir se dabao"}};
+    const bk=el.querySelector("#eBack");if(bk)bk.onclick=()=>save({end:null,sale:0},"Gaay wapas jud gayi");
     const dl=el.querySelector("#eDel");dl.onclick=async()=>{if(!dl.dataset.sure){dl.dataset.sure=1;dl.textContent="Pakka mitana hai? Phir se dabao";return}
       try{await S.db.doc("cows/"+id).delete();delete S.cows[id];S.pform=null;closeSheet();toast("Mita di");render()}catch(x){er.textContent=errText(x)}};
   });
@@ -1368,9 +1370,9 @@ function renderMunafa(){
      return `<tr><td>${esc(c.name)}</td><td>${p?lt(p.L):"—"}</td><td>${rs(x)}</td><td class="${earn===null?"":earn-x>=0?"pos":"neg"}">${earn===null?"—":rs(earn-x)}</td></tr>`}).join("")}</tbody></table></div>
      <p class="small" style="margin:6px 0 0">*Gaay ki kamai = uske doodh ka hissa × kul bikri. Gaay-wise doodh jitne din bharoge, utna sahi.${ex.unassigned?` ${rs(ex.unassigned)} chara kisi gaay me nahi baanta (us din koi gaay nahi thi).`:""}</p></div>`:"";
   const allInc=incomeIn(START,t).amt,allEx=expensesIn(START,t).total,allNet=allInc-allEx;
-  const buy=cowList().reduce((s,c)=>s+(Number(c.price)||0),0);
-  const monthsRun=Math.max(1,dDiff(START,t)/30.4),avg=allNet/monthsRun,pct=buy?Math.max(0,Math.min(100,allNet/buy*100)):0;
-  const left=buy-allNet,est=avg>0&&left>0?Math.ceil(left/avg):null;
+  const buy=cowList().reduce((s,c)=>s+(Number(c.price)||0),0),sold=cowList().reduce((s,c)=>s+(c.end?Number(c.sale)||0:0),0);
+  const monthsRun=Math.max(1,dDiff(START,t)/30.4),avg=allNet/monthsRun,pct=buy?Math.max(0,Math.min(100,(allNet+sold)/buy*100)):0;
+  const left=buy-allNet-sold,est=avg>0&&left>0?Math.ceil(left/avg):null;
   const perL=inc.L?ex.total/inc.L:null,rate=inc.L?inc.amt/inc.L:null;
   app.innerHTML=banners()+`
   <div class="seg s2">${Object.entries(PK).map(([k,v])=>`<button class="chip2" data-pk2="${k}" aria-pressed="${S.pk===k}">${v.t}</button>`).join("")}</div>
@@ -1387,7 +1389,7 @@ function renderMunafa(){
   </div>
   ${bars}
   <div class="card set"><h2>Poonji (gaay kharid)</h2>
-    <div class="lines small"><div><span>Gaay kharid me laga</span><b style="color:var(--ink)">${rs(buy)}</b></div><div><span>Ab tak ka kul munafa (1 Oct se)</span><b class="${allNet>=0?"pos":"neg"}">${rs(allNet)}</b></div></div>
+    <div class="lines small"><div><span>Gaay kharid me laga</span><b style="color:var(--ink)">${rs(buy)}</b></div>${sold?`<div><span>Gaay bechne se wapas mila</span><b class="pos">${rs(sold)}</b></div>`:""}<div><span>Ab tak ka kul munafa (1 Oct se)</span><b class="${allNet>=0?"pos":"neg"}">${rs(allNet)}</b></div></div>
     ${buy?`<div class="prog" aria-label="Wapas aaya ${Math.round(pct)} pratishat"><i style="width:${pct}%"></i></div>
     <p style="margin:0;font-weight:700">${Math.round(pct)}% paisa wapas aaya. ${left<=0?"Gaay ka poora paisa nikal aaya!":`Abhi ${rs(left)} aur nikalna baaki.`}</p>`:`<p class="small" style="margin:0">Gaay tab me gaay jodo, uska kharid paisa yahan dikhega.</p>`}
     <p class="small" style="margin:0">Gaay ka kharid paisa mahine ke munafe me nahi joda — warna jis mahine gaay aayi, wo mahina bada nuksaan dikhata.</p></div>`;
