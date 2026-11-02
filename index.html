@@ -366,6 +366,10 @@ details summary{cursor:pointer}
 
 .chips .chip2{min-height:44px}
 .bbar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}.bbar::-webkit-scrollbar{display:none}.bbar .chip2{flex:0 0 auto;min-height:44px;padding:0 16px;font-size:1rem}
+.stats.s2c{grid-template-columns:1fr 1fr}
+.vsel select{min-height:56px;font-size:1.2rem;font-weight:800;padding:0 14px;border:2.5px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);width:100%}
+.tabs{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:4px!important}.tabs button{font-size:.66rem!important}
+.vcard{display:grid;gap:8px}.vcard .vh{display:flex;justify-content:space-between;align-items:center;gap:8px}.vcard .vh b{font-family:var(--display);font-size:1.3rem;min-width:0;overflow-wrap:anywhere}.vcard .vaddr{text-align:right;overflow-wrap:anywhere;max-width:65%}.vcard a{color:var(--ink);font-weight:800}
 </style>
 </head>
 <body>
@@ -611,6 +615,7 @@ details summary{cursor:pointer}
 <nav class="tabs" role="tablist">
   <button role="tab" aria-selected="true" data-tab="aaj"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M4 14 L15 5 L26 14 V26 H4z" fill="#FFF3D6" stroke="#4A3220" stroke-width="2.2" stroke-linejoin="round"/><path d="M2 15 L15 4 L28 15" fill="none" stroke="#D2452F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="12" y="17" width="6" height="9" fill="#B97A45" stroke="#4A3220" stroke-width="2"/></svg>Aaj</button>
   <button role="tab" aria-selected="false" data-tab="entry"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M9 6h12v4l3 5v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V15l3-5z" fill="url(#gCan)" stroke="#4A3220" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 6h12v4H9z" fill="url(#gCap)" stroke="#4A3220" stroke-width="2.2"/></svg>Doodh</button>
+  <button role="tab" aria-selected="false" data-tab="vendor"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="5" y="13" width="20" height="13" fill="#FFF3D6" stroke="#4A3220" stroke-width="2.2"/><path d="M3 8 h24 l-2 6 H5z" fill="#D2452F" stroke="#4A3220" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 8 l-1 6 M15 8 v6 M21 8 l1 6" stroke="#fff" stroke-width="2"/><rect x="12" y="18" width="6" height="8" fill="#7CCBF2" stroke="#4A3220" stroke-width="2"/></svg>Vendor</button>
   <button role="tab" aria-selected="false" data-tab="gaay"><svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 12 q-6-6-2-10 q3 4 6 7z M38 12 q6-6 2-10 q-3 4-6 7z" fill="#FFF7E2" stroke="#4A3220" stroke-width="2.5"/><rect x="11" y="8" width="26" height="34" rx="13" fill="#fff" stroke="#4A3220" stroke-width="3"/><path d="M24 9 q8 1 11 9 q-8 1-11-9z" fill="#4A3220"/><circle cx="18" cy="22" r="3" fill="#3A2414"/><circle cx="30" cy="22" r="3" fill="#3A2414"/><ellipse cx="24" cy="34" rx="11" ry="7.5" fill="#FFC9D2" stroke="#4A3220" stroke-width="2.5"/></svg>Gaay</button>
   <button role="tab" aria-selected="false" data-tab="kharcha"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M11 5h8l-2 4h-4z" fill="#D99A12" stroke="#4A3220" stroke-width="2"/><path d="M13 9 C5 12 4 26 15 26 C26 26 25 12 17 9z" fill="url(#gCap)" stroke="#4A3220" stroke-width="2.2"/><path d="M12 15h6M12 18h6M13 15c4 0 4 3 0 3l5 4" fill="none" stroke="#4A3220" stroke-width="1.8" stroke-linecap="round"/></svg>Kharcha</button>
   <button role="tab" aria-selected="false" data-tab="hisaab"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="5" y="17" width="5" height="9" fill="#E2483A" stroke="#4A3220" stroke-width="2"/><rect x="12.5" y="12" width="5" height="14" fill="#FFC94A" stroke="#4A3220" stroke-width="2"/><rect x="20" y="7" width="5" height="19" fill="#4DB04A" stroke="#4A3220" stroke-width="2"/><path d="M4 12 L12 6 L17 9 L25 3" fill="none" stroke="#4A3220" stroke-width="2" stroke-linecap="round"/></svg>Hisaab</button>
@@ -681,7 +686,7 @@ const fmtD=s=>{const d=parse(s);return d.getDate()+" "+MON[d.getMonth()].slice(0
 
 const S={tab:"aaj",health:{},stock:{},fixed:{},hview:"pandey",assets:null,date:today(),month:today().slice(0,7),entries:{},settings:null,db:null,ready:false,canWrite:true,form:null,confirmDel:false,showBill:false,showList:false,cows:{},exp:{},prod:{},pdate:today(),pform:null,ef:null,emonth:null,pk:null,pym:null,buyer:"main",allE:{}};
 if(S.date<START){S.date=START;S.month=START.slice(0,7)}
-const buyers=()=>{const st=S.settings||{};return [{id:"main",name:st.shop||"Pandey Ji ki Dukan",rates:st.rates||[],opening:st.opening||0,from:START}].concat((st.buyers||[]).filter(b=>b&&b.id))};
+const buyers=()=>{const st=S.settings||{};return [{id:"main",name:st.shop||"Pandey Ji ki Dukan",phone:st.shopPhone||"",addr:st.shopAddr||"",rates:st.rates||[],opening:st.opening||0,from:START}].concat((st.buyers||[]).filter(b=>b&&b.id))};
 const curB=()=>buyers().find(b=>b.id===S.buyer)||buyers()[0];
 const shop=()=>curB().name;
 const entId=(d,b)=>{b=b||S.buyer;return b==="main"?d:d+"~"+b};
@@ -820,12 +825,12 @@ function renderEntry(){
   const f=S.form,d=parse(S.date),t=today(),isToday=S.date===t,saved=!!S.entries[S.date];
   const miss=missingDays().filter(x=>x!==S.date);
   const r=formRate(),kul=formLitres(),k=nearestFilled(S.date),yest=addDays(S.date,-1);
-  const firstTime=Object.keys(S.entries).length===0;
+  const firstTime=Object.keys(S.allE||{}).length===0;
   let kal="";
   if(k&&!f.no&&emptyLG("s")&&emptyLG("e")){const e=S.entries[k],dd=parse(k);
     kal=`<button class="kal" id="kal" data-k="${k}"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#fff" stroke="#4A3220" stroke-width="3"/><path d="M11 21a9 9 0 1 0 3-7M11 9v6h6" fill="none" stroke="#4A3220" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>${k===yest?"Kal jaisa bharo":(dd.getDate()+" "+MON[dd.getMonth()].slice(0,3)+" jaisa bharo")}</b><small>Subah ${lt(e.s)} · Shaam ${lt(e.e)} (${dd.getDate()} ${MON[dd.getMonth()].slice(0,3)})</small></span></button>`}
   const cm=monthCalc(t.slice(0,7));
-  app.innerHTML=banners()+buyerBar()+`
+  app.innerHTML=banners()+`
   ${!firstTime?`<button class="card strip" id="toH"><span><span class="small" style="display:block;font-weight:700">${esc(shop())} pe baaki (aaj tak)</span><b>${rs(cm.baaki)}</b></span><span class="go">›</span></button>`:""}
   ${firstTime&&S.db?`<div class="card help"><b style="font-family:var(--display);font-size:1.2rem">Kaise chalaye? Bas 3 kaam</b><ol><li>Setting me rate likho (ek baar)</li><li>Subah aur shaam ka doodh bharo</li><li>Laal SAVE button dabao</li></ol></div>`:""}
   <div class="datebar">
@@ -834,12 +839,14 @@ function renderEntry(){
     <button class="nav" id="next" aria-label="Agla din" ${isToday?"disabled":""}>›</button>
   </div>
   ${!isToday?`<button class="toggle" id="goToday">Aaj pe wapas jao</button>`:""}
+  <div class="field vsel"><label for="vSel">Doodh kisko diya (vendor)</label><select id="vSel">${buyers().map(b=>`<option value="${b.id}" ${b.id===S.buyer?"selected":""}>${esc(b.name)}</option>`).join("")}<option value="__new">+ Naya vendor jodo</option></select></div>
   ${kal}
   ${milkCard("s","Subah ka doodh","am",sunIcon())}
   ${milkCard("e","Shaam ka doodh","pm",moonIcon())}
   <div class="card total"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><path d="M10 8h20v5l4 6v15a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V19l4-6z" fill="url(#gCan)" stroke="#4A3220" stroke-width="2.5" stroke-linejoin="round"/><path d="M10 8h20v5H10z" fill="url(#gCap)" stroke="#4A3220" stroke-width="2.5"/></svg>
     <div><span>Aaj ka kul doodh</span><b id="kul">${isNaN(kul)?"—":lt(kul)}</b><span id="kulrs">${r?`${rs((kul||0)*r)} · rate ₹${r}/L`:"Rate abhi nahi likha"}</span></div></div>
   <div class="field ratef"><label for="rt">Rate (₹ / litre) — ${esc(shop())}</label><input id="rt" inputmode="decimal" placeholder="jaise 55" value="${esc(f.r||"")}"></div>
+
   <div class="row2">
     <div class="field"><label for="paid">Paisa mila (₹)</label><input id="paid" inputmode="numeric" placeholder="0" value="${esc(f.p)}"></div>
     <div class="field"><label>&nbsp;</label><button class="toggle" id="noSupply" aria-pressed="${f.no}">${f.no?"✔ Supply nahi hui":"Aaj supply nahi"}</button></div>
@@ -890,6 +897,7 @@ function wireEntry(){
   on("#kal",()=>{const e=S.entries[$("#kal").dataset.k];setLG("s",e.s||null);setLG("e",e.e||null);S.form.dirty=true;renderEntry();toast("Bhar diya! Ab SAVE dabao")});
   on("#noSupply",()=>{S.form.no=!S.form.no;if(S.form.no){setLG("s",null);setLG("e",null)}S.form.dirty=true;renderEntry()});
   on("#save",saveEntry);
+  const vs=$("#vSel");if(vs)vs.onchange=()=>{const v=vs.value;vs.value=S.buyer;if(v==="__new"){guard(openVendor);return}if(v===S.buyer)return;guard(()=>{S.buyer=v;S.entries=entriesFor(v);S.form=null;S.confirmDel=false;render()})};
   on("#del",()=>{S.confirmDel=true;renderEntry()});
   on("#delNo",()=>{S.confirmDel=false;renderEntry()});
   on("#delYes",delEntry);
@@ -1094,8 +1102,13 @@ function vendorCard(){
    <button class="chunk green" id="vAdd">+ Naya vendor jodo</button></div>`;
 }
 function wireVendor(){
-  const a=$("#vAdd");if(a)a.onclick=()=>sheet(`<h3>Naya doodh lene wala</h3>
+  const a=$("#vAdd");if(a)a.onclick=openVendor;wireVdel();
+}
+function openVendor(){
+  sheet(`<h3>Naya doodh lene wala</h3>
     <div class="field"><label for="vName">Naam (dukan / aadmi)</label><input id="vName" maxlength="24" placeholder="jaise: Gupta Dairy"></div>
+    <div class="field"><label for="vPhone">Phone number</label><input id="vPhone" inputmode="tel" maxlength="17" placeholder="10 number"></div>
+    <div class="field"><label for="vAddr">Pata</label><input id="vAddr" maxlength="80" placeholder="jaise: Bansi road, Naugarh"></div>
     <div class="row2"><div class="field"><label for="vRate">Rate (₹/litre)</label><input id="vRate" inputmode="decimal" placeholder="55"></div>
     <div class="field"><label for="vFrom">Kab se doodh ja raha</label><input id="vFrom" type="date" min="${START}" max="${today()}" value="${today()}"></div></div>
     <p class="err" id="vErr"></p><button class="save green bigbtn" id="vSave">Jodo</button><button class="link" id="vNo">Ruko</button>`,el=>{
@@ -1103,11 +1116,46 @@ function wireVendor(){
       el.querySelector("#vSave").onclick=async()=>{const er=el.querySelector("#vErr"),nm=el.querySelector("#vName").value.trim(),r=num(el.querySelector("#vRate").value),fr=el.querySelector("#vFrom").value;
         if(!nm){er.textContent="Naam likho";return}
         if(buyers().some(b=>b.name.trim().toLowerCase()===nm.toLowerCase())){er.textContent="Is naam ka vendor pehle se hai";return}
+        const ph=cleanPhone(el.querySelector("#vPhone").value);if(ph===null){er.textContent="Phone 10 number ka likho (ya khali chhodo)";return}
         if(r===null||isNaN(r)||r<1||r>500){er.textContent="Rate ₹1 se 500 ke beech likho";return}
         if(!fr||fr<START||fr>today()){er.textContent="Sahi tareekh chuno";return}
-        const id="v"+newId(),list=((S.settings&&S.settings.buyers)||[]).concat([{id,name:nm,rates:[{from:fr,rate:r}],opening:0,from:fr}]);
+        const id="v"+newId(),list=((S.settings&&S.settings.buyers)||[]).concat([{id,name:nm,phone:ph,addr:el.querySelector("#vAddr").value.trim(),rates:[{from:fr,rate:r}],opening:0,from:fr}]);
         closeSheet();await saveSettings({buyers:list},{},`✔ ${nm} jud gaya`);S.buyer=id;S.entries=entriesFor(id);S.form=null;render()};
     });
+}
+function cleanPhone(v){const d=String(v||"").replace(/[^0-9]/g,"");if(!d)return "";const x=d.length===12&&d.startsWith("91")?d.slice(2):d.length===11&&d.startsWith("0")?d.slice(1):d;return /^[6-9]\d{9}$/.test(x)?x:null}
+function renderVendor(){
+  const L=buyers(),t=today(),mon=t.slice(0,7);
+  app.innerHTML=banners()+`<div class="card countcard"><svg width="50" height="50" viewBox="0 0 30 30" aria-hidden="true"><rect x="5" y="13" width="20" height="13" fill="#FFF3D6" stroke="#4A3220" stroke-width="2"/><path d="M3 8 h24 l-2 6 H5z" fill="#D2452F" stroke="#4A3220" stroke-width="2" stroke-linejoin="round"/><rect x="12" y="18" width="6" height="8" fill="#7CCBF2" stroke="#4A3220" stroke-width="2"/></svg><div><span class="small" style="font-weight:700">Doodh lene wale</span><b>${L.length}</b></div><button class="chunk green" id="vAddT">+ Naya vendor</button></div>
+  ${L.map(b=>{const r=rateFor(t,b.id),c=monthCalc(mon,b.id);return `<div class="card vcard"><div class="vh"><b>${esc(b.name)}</b><button class="chunk" data-vedit="${b.id}">Edit</button></div>
+   <div class="lines small"><div><span>Phone</span><span>${b.phone?`<a href="tel:${esc(b.phone)}">${esc(b.phone)}</a>`:"—"}</span></div><div><span>Pata</span><span class="vaddr">${b.addr?esc(b.addr):"—"}</span></div><div><span>Rate</span><b style="color:var(--ink)">${r?"₹"+r+"/L":"—"}</b></div><div><span>Baaki (aaj tak)</span><b style="color:var(--ink)">${rs(c.baaki)}</b></div></div>
+   <button class="toggle" data-vgo="${b.id}">${esc(b.name)} ka doodh likho ›</button></div>`}).join("")}`;
+  $("#vAddT").onclick=openVendor;
+  document.querySelectorAll("[data-vedit]").forEach(x=>x.onclick=()=>editVendor(x.dataset.vedit));
+  document.querySelectorAll("[data-vgo]").forEach(x=>x.onclick=()=>guard(()=>{S.buyer=x.dataset.vgo;S.entries=entriesFor(S.buyer);S.form=null;S.date=today();setTab("entry")}));
+}
+function editVendor(id){
+  const b=buyers().find(x=>x.id===id);if(!b)return;const has=Object.keys(entriesFor(id)).length>0;
+  sheet(`<h3>Vendor badlo</h3>
+   <div class="field"><label for="wName">Naam</label><input id="wName" maxlength="24" value="${esc(b.name)}"></div>
+   <div class="field"><label for="wPhone">Phone number</label><input id="wPhone" inputmode="tel" maxlength="17" value="${esc(b.phone||"")}" placeholder="10 number"></div>
+   <div class="field"><label for="wAddr">Pata</label><input id="wAddr" maxlength="80" value="${esc(b.addr||"")}"></div>
+   <p class="small" style="margin:0">Rate badalna ho to Doodh screen ke Rate box me ya Setting me badlo.</p>
+   <p class="err" id="wErr"></p><button class="save green bigbtn" id="wSave">Save karo</button>
+   ${id!=="main"&&!has?`<button class="link" id="wDel">Ye vendor hatao</button>`:""}<button class="link" id="wNo">Ruko</button>`,el=>{
+    el.querySelector("#wNo").onclick=closeSheet;
+    el.querySelector("#wSave").onclick=async()=>{const er=el.querySelector("#wErr"),nm=el.querySelector("#wName").value.trim(),ph=cleanPhone(el.querySelector("#wPhone").value),ad=el.querySelector("#wAddr").value.trim();
+      if(!nm){er.textContent="Naam likho";return}
+      if(buyers().some(x=>x.id!==id&&x.name.trim().toLowerCase()===nm.toLowerCase())){er.textContent="Is naam ka vendor pehle se hai";return}
+      if(ph===null){er.textContent="Phone 10 number ka likho (ya khali chhodo)";return}
+      closeSheet();
+      if(id==="main")await saveSettings({shop:nm,shopPhone:ph,shopAddr:ad},{},"✔ Save ho gaya");
+      else await saveSettings({buyers:((S.settings&&S.settings.buyers)||[]).map(x=>x.id===id?Object.assign({},x,{name:nm,phone:ph,addr:ad}):x)},{},"✔ Save ho gaya")};
+    const dl=el.querySelector("#wDel");if(dl)dl.onclick=async()=>{if(!dl.dataset.sure){dl.dataset.sure=1;dl.textContent="Pakka hatana hai? Phir dabao";return}
+      closeSheet();if(S.buyer===id){S.buyer="main";S.entries=entriesFor("main")}await saveSettings({buyers:((S.settings&&S.settings.buyers)||[]).filter(x=>x.id!==id)},{},"Vendor hata diya")};
+  });
+}
+function wireVdel(){
   document.querySelectorAll("[data-vdel]").forEach(b=>b.onclick=async()=>{if(!b.dataset.sure){b.dataset.sure=1;b.textContent="pakka?";return}
     const list=((S.settings&&S.settings.buyers)||[]).filter(x=>x.id!==b.dataset.vdel);if(S.buyer===b.dataset.vdel){S.buyer="main";S.entries=entriesFor("main")}await saveSettings({buyers:list},{},"Vendor hata diya")});
 }
@@ -1371,15 +1419,15 @@ function renderKharcha(){
    <div class="seg s3">${Object.entries(TYPES).map(([k,v])=>`<button class="chip2" data-et="${k}" aria-pressed="${f.type===k}">${v}</button>`).join("")}</div>
    <div class="row2"><div class="field"><label for="eAmt">Kitna (₹)</label><input id="eAmt" inputmode="numeric" placeholder="500" value="${esc(f.amt)}"></div>
    <div class="field"><label for="eDate">Kab</label><input id="eDate" type="date" value="${f.date}" min="${START}" max="${t}"></div></div>
-   ${f.type!=="farm"?`<div class="field"><label for="eCow">Kis gaay ka</label><select id="eCow">${cowOpts}</select></div>`:""}
-   <div class="field"><label for="eNote">Kya liya (chahe to)</label><input id="eNote" placeholder="${NOTEHINT[f.type]}" value="${esc(f.note)}" maxlength="60"></div>
+   ${f.type==="dawai"?`<div class="field"><label for="eCow">Kis gaay ka</label><select id="eCow">${cowOpts}</select></div>`:""}
+   <div class="field"><label for="eNote">${f.type==="chara"?"Product (kya liya)":"Kya liya (chahe to)"}</label><input id="eNote" placeholder="${NOTEHINT[f.type]}" value="${esc(f.note)}" maxlength="60"></div>
    <p class="err" id="xErr"></p>
    <button class="save" id="xSave" style="min-height:58px;font-size:1.35rem" ${!S.db||!S.canWrite?"disabled":""}>KHARCHA SAVE KARO</button></div>
   <div class="datebar"><button class="nav" id="emprev" ${S.emonth<=START.slice(0,7)?"disabled":""} aria-label="Pichhla mahina">‹</button><div class="board"><b>${MON[Number(S.emonth.slice(5))-1]}</b><span>${S.emonth.slice(0,4)}</span></div><button class="nav" id="emnext" ${S.emonth>=t.slice(0,7)?"disabled":""} aria-label="Agla mahina">›</button></div>
-  <div class="stats">
+  <div class="stats ${ex.farm?"":"s2c"}">
    <div class="card stat"><span>Chara-daana</span><b>${rs(ex.chara)}</b></div>
    <div class="card stat"><span>Dawai</span><b>${rs(ex.dawai)}</b></div>
-   <div class="card stat"><span>Farm</span><b>${rs(ex.farm)}</b></div></div>
+   ${ex.farm?`<div class="card stat"><span>Farm</span><b>${rs(ex.farm)}</b></div>`:""}</div>
   <div class="card strip" style="cursor:default"><span>Is mahine ka kul kharcha</span><b>${rs(ex.total)}</b></div>
   ${ex.list.length?`<div class="card"><ul class="hist xlist">${ex.list.map(x=>`<li><span><b>${TYPES[x.type]}</b> · ${fmtS(x.date)}<br><small class="small">${x.type!=="farm"?esc(cowName(x.cow||"all")):"Farm"}${x.note?" · "+esc(x.note):""}</small></span><span style="text-align:right"><b>${rs(x.amt)}</b><br><button class="link" data-xdel="${x.id}">hatao</button></span></li>`).join("")}</ul></div>`:`<div class="card"><p class="small" style="margin:0">Is mahine abhi koi kharcha nahi likha.</p></div>`}`;
   document.querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>{S.ef.type=b.dataset.et;render()});
@@ -1394,7 +1442,7 @@ function renderKharcha(){
     if(a===null||isNaN(a)||a<=0){er.textContent="Kitna paisa laga, likho. Jaise 500";return}
     if(a>1000000){er.textContent="Itna bada kharcha sahi nahi lagta";return}
     if(!S.ef.date||S.ef.date<START||S.ef.date>t){er.textContent="Sahi tareekh chuno";return}
-    const nid=newId(),body={type:S.ef.type,amt:a,date:S.ef.date,cow:S.ef.type==="farm"?null:(S.ef.cow||"all"),note:S.ef.note.trim(),at:Date.now()};
+    const nid=newId(),body={type:S.ef.type,amt:a,date:S.ef.date,cow:S.ef.type==="farm"?null:S.ef.type==="dawai"?(S.ef.cow||"all"):"all",note:S.ef.note.trim(),at:Date.now()};
     const b=$("#xSave");b.disabled=true;b.textContent="Save ho raha hai…";
     try{await writeDoc("expenses/"+nid,body);S.exp[nid]=body;S.ef={type:S.ef.type,amt:"",date:S.ef.date,cow:S.ef.cow,note:""};S.emonth=body.date.slice(0,7);toast("✔ Kharcha save");render()}
     catch(x){b.disabled=false;b.textContent="KHARCHA SAVE KARO";er.textContent=errText(x)}};
@@ -1427,7 +1475,7 @@ function renderMunafa(){
     <div><span>Doodh bika (${lt(inc.L)})</span><b class="pos">+ ${rs(inc.amt)}</b></div>
     <div><span>Chara-daana</span><span class="neg">− ${rs(ex.chara)}</span></div>
     <div><span>Dawai / Doctor</span><span class="neg">− ${rs(ex.dawai)}</span></div>
-    <div><span>Farm kharcha</span><span class="neg">− ${rs(ex.farm)}</span></div>
+    ${ex.farm?`<div><span>Farm kharcha</span><span class="neg">− ${rs(ex.farm)}</span></div>`:""}
     <div class="sumline"><span>= ${net>=0?"Munafa":"Nuksaan"}</span><b class="${net>=0?"pos":"neg"}">${rs(net)}</b></div>
     ${ex.loan?`<div class="small"><span>Loan kisht bhari (munafa me nahi gini)</span><span>${rs(ex.loan)}</span></div>`:""}
     ${perL!==null?`<div class="small"><span>1 litre ki laagat ${rs(perL)} · bikta ${rs(rate)}</span><span>${rate-perL>=0?"bachat":"ghata"} ${rs(Math.abs(rate-perL))}/L</span></div>`:""}
@@ -1446,7 +1494,7 @@ function renderMunafa(){
 /* ================= FARM v2: aaj, tika, stock, fix kharcha ================= */
 const HK={fmd:{t:"Khurpaka-muhpaka tika",gap:182},hs:{t:"Galghotu tika",gap:365},lsd:{t:"Lumpy tika",gap:365},worm:{t:"Pet ke keede ki dawa",gap:91},bima:{t:"Pashu bima renew",gap:365},other:{t:"Doosra ilaaj / dawai",gap:0}};
 const STOCKNAMES=[["Bhusa","quintal"],["Daana / Cattle feed","bori"],["Khali","kg"],["Mineral mixture","kg"],["Hara chara","quintal"]];
-const FIXNAMES=["Pashu bima","Loan kisht","Mazdoor","Bijli bill"];
+const FIXNAMES=["Pashu bima","Loan kisht"];
 const ICON={
   chara:`<svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><path d="M10 14 h28 l4 26 a3 3 0 0 1-3 3 H9 a3 3 0 0 1-3-3z" fill="#E9C46A" stroke="#4A3220" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 14 q12-8 24 0" fill="#F4D58D" stroke="#4A3220" stroke-width="2.5"/><path d="M16 22 v14 M24 22 v16 M32 22 v14" stroke="#B5862A" stroke-width="2"/><path d="M18 8 l2 6 M24 6 v8 M30 8 l-2 6" stroke="#C9A227" stroke-width="2.5" stroke-linecap="round"/></svg>`,
   dawai:`<svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><rect x="15" y="6" width="18" height="7" rx="2" fill="#4DB04A" stroke="#4A3220" stroke-width="2.5"/><path d="M13 13 h22 v26 a4 4 0 0 1-4 4 H17 a4 4 0 0 1-4-4z" fill="#EAF6FF" stroke="#4A3220" stroke-width="2.5"/><rect x="13" y="20" width="22" height="13" fill="#fff" stroke="#4A3220" stroke-width="2"/><path d="M24 22 v9 M19.5 26.5 h9" stroke="#E04A3B" stroke-width="3" stroke-linecap="round"/></svg>`,
@@ -1684,7 +1732,7 @@ function fixedSheet(){
    <div class="field"><label for="fName">Naam</label><input id="fName" maxlength="30"></div>
    <div class="row2"><div class="field"><label for="fAmt">Har mahine ₹</label><input id="fAmt" inputmode="numeric"></div>
    <div class="field"><label for="fDay">Kis tareekh ko</label><input id="fDay" inputmode="numeric" value="1" placeholder="1-28"></div></div>
-   <div class="field"><label for="fType">Kis me gine</label><select id="fType"><option value="farm">Farm kharcha</option><option value="chara">Chara-daana</option><option value="dawai">Dawai / Doctor</option><option value="loan">Loan kisht (munafa me nahi ginegi)</option></select></div>
+   <div class="field"><label for="fType">Kis me gine</label><select id="fType"><option value="chara">Chara-daana</option><option value="dawai">Dawai / Doctor</option><option value="loan">Loan kisht (munafa me nahi ginegi)</option></select></div>
    <p class="small" style="margin:0">Is mahine se har mahine apne aap kharche me judega. Band karna ho to "Band karo" dabana.</p>
    <p class="err" id="fErr"></p><button class="save green bigbtn" id="fSave">Jodo</button><button class="link" id="fNo">Ruko</button>`,el=>{
     el.querySelectorAll("[data-fn]").forEach(b=>b.onclick=()=>{el.querySelector("#fName").value=b.dataset.fn;el.querySelectorAll("[data-fn]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
@@ -1704,12 +1752,12 @@ function renderKharcha(){
   const cowOpts=`<option value="all" ${f.cow==="all"?"selected":""}>Sab gaay (barabar baant do)</option>`+ac.map(c=>`<option value="${c.id}" ${f.cow===c.id?"selected":""}>${esc(c.name)}</option>`).join("");
   app.innerHTML=banners()+`
   <div class="card set"><h2>Naya kharcha likho</h2>
-   <div class="ktiles">${Object.entries(TYPES).map(([k,v])=>`<button class="ktile" data-et="${k}" aria-pressed="${f.type===k}">${ICON[k]}<span>${v}</span></button>`).join("")}</div>
+   <div class="ktiles">${Object.entries(TYPES).filter(([k])=>k!=="farm"||f.type==="farm").map(([k,v])=>`<button class="ktile" data-et="${k}" aria-pressed="${f.type===k}">${ICON[k]}<span>${v}</span></button>`).join("")}</div>
    <div class="field"><label for="eAmt">Kitna (₹)</label><input id="eAmt" inputmode="numeric" placeholder="500" value="${esc(f.amt)}"></div>
    <div class="chips">${[100,500,1000,2000].map(a=>`<button class="chip2" data-add="${a}">+ ₹${a.toLocaleString("en-IN")}</button>`).join("")}<button class="chip2" data-add="0">Mitao</button></div>
    <div class="field"><label for="eDate">Kab</label><input id="eDate" type="date" value="${f.date}" min="${START}" max="${t}" style="font-size:1.15rem;padding:0 12px"></div>
-   ${f.type!=="farm"?`<div class="field"><label for="eCow">Kis gaay ka</label><select id="eCow" style="font-size:1.05rem;padding:0 12px">${cowOpts}</select></div>`:""}
-   <div class="field"><label for="eNote">Kya liya (chahe to)</label><input id="eNote" placeholder="${NOTEHINT[f.type]}" value="${esc(f.note)}" maxlength="60"></div>
+   ${f.type==="dawai"?`<div class="field"><label for="eCow">Kis gaay ka</label><select id="eCow" style="font-size:1.05rem;padding:0 12px">${cowOpts}</select></div>`:""}
+   <div class="field"><label for="eNote">${f.type==="chara"?"Product (kya liya)":"Kya liya (chahe to)"}</label><input id="eNote" placeholder="${NOTEHINT[f.type]}" value="${esc(f.note)}" maxlength="60"></div>
    <p class="err" id="xErr"></p>
    <button class="save" id="xSave" style="min-height:58px;font-size:1.35rem" ${!S.db||!S.canWrite?"disabled":""}>KHARCHA SAVE KARO</button></div>
 
@@ -1720,10 +1768,10 @@ function renderKharcha(){
    <button class="chunk" id="sAdd">+ Naya saaman (bhusa, daana…)</button></div>
 
   <div class="datebar"><button class="nav" id="emprev" ${S.emonth<=START.slice(0,7)?"disabled":""} aria-label="Pichhla mahina">‹</button><div class="board"><b>${MON[Number(S.emonth.slice(5))-1]}</b><span>${S.emonth.slice(0,4)}</span></div><button class="nav" id="emnext" ${S.emonth>=t.slice(0,7)?"disabled":""} aria-label="Agla mahina">›</button></div>
-  <div class="stats">
+  <div class="stats ${ex.farm?"":"s2c"}">
    <div class="card stat"><span>Chara-daana</span><b>${rs(ex.chara)}</b></div>
    <div class="card stat"><span>Dawai</span><b>${rs(ex.dawai)}</b></div>
-   <div class="card stat"><span>Farm</span><b>${rs(ex.farm)}</b></div></div>
+   ${ex.farm?`<div class="card stat"><span>Farm</span><b>${rs(ex.farm)}</b></div>`:""}</div>
   <div class="card strip" style="cursor:default"><span>Is mahine ka kul kharcha${ex.loan?`<small class="small" style="display:block">+ loan kisht ${rs(ex.loan)} alag</small>`:""}</span><b>${rs(ex.total)}</b></div>
   ${ex.list.length?`<div class="card"><ul class="hist xlist">${ex.list.map(x=>`<li><span class="xi">${ICON[x.type]||""}</span><span style="flex:1;min-width:0"><b>${TYPES[x.type]||"Loan kisht"}</b> · ${fmtS(x.date)}${x.fixed?' <span class="pill off">fix</span>':""}<br><small class="small">${x.type!=="farm"?esc(cowName(x.cow||"all")):"Farm"}${x.note?" · "+esc(x.note):""}</small></span><span style="text-align:right"><b>${rs(x.amt)}</b>${x.fixed?"":`<br><button class="link" data-xdel="${x.id}">hatao</button>`}</span></li>`).join("")}</ul></div>`:`<div class="card"><p class="small" style="margin:0">Is mahine abhi koi kharcha nahi likha.</p></div>`}
 
@@ -1748,7 +1796,7 @@ function renderKharcha(){
     if(a===null||isNaN(a)||a<=0){er.textContent="Kitna paisa laga, likho. Jaise 500";return}
     if(a>1000000){er.textContent="Itna bada kharcha sahi nahi lagta";return}
     if(!S.ef.date||S.ef.date<START||S.ef.date>t){er.textContent="Sahi tareekh chuno";return}
-    const nid=newId(),body={type:S.ef.type,amt:a,date:S.ef.date,cow:S.ef.type==="farm"?null:(S.ef.cow||"all"),note:S.ef.note.trim(),at:Date.now()};
+    const nid=newId(),body={type:S.ef.type,amt:a,date:S.ef.date,cow:S.ef.type==="farm"?null:S.ef.type==="dawai"?(S.ef.cow||"all"):"all",note:S.ef.note.trim(),at:Date.now()};
     const b=$("#xSave");b.disabled=true;b.textContent="Save ho raha hai…";
     try{await writeDoc("expenses/"+nid,body);S.exp[nid]=body;S.ef={type:S.ef.type,amt:"",date:S.ef.date,cow:S.ef.cow,note:""};S.emonth=body.date.slice(0,7);toast("✔ Kharcha save");render()}
     catch(x){b.disabled=false;b.textContent="KHARCHA SAVE KARO";er.textContent=errText(x)}};
@@ -1771,7 +1819,7 @@ function render(){
   $("#shopName").textContent=shop();
   if(!S.ready){app.innerHTML=`<div class="card"><p style="margin:0;font-weight:700">Khata khul raha hai…</p></div>`;return}
   app.className=S.tab==="entry"?"entry":"";
-  if(S.tab==="aaj")renderAaj();else if(S.tab==="entry")renderEntry();else if(S.tab==="hisaab"){if(S.hview==="munafa")renderMunafa();else renderHisaab();hToggle()}else if(S.tab==="gaay")renderGaay();else if(S.tab==="kharcha")renderKharcha();else if(S.tab==="munafa"){S.tab="hisaab";S.hview="munafa";renderMunafa();hToggle()}else renderSetting();
+  if(S.tab==="aaj")renderAaj();else if(S.tab==="entry")renderEntry();else if(S.tab==="hisaab"){if(S.hview==="munafa")renderMunafa();else renderHisaab();hToggle()}else if(S.tab==="gaay")renderGaay();else if(S.tab==="kharcha")renderKharcha();else if(S.tab==="vendor")renderVendor();else if(S.tab==="munafa"){S.tab="hisaab";S.hview="munafa";renderMunafa();hToggle()}else renderSetting();
   document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>setTab(b.dataset.go));
   document.querySelectorAll("[data-buyer]").forEach(x=>x.onclick=()=>{if(x.dataset.buyer===S.buyer)return;guard(()=>{S.buyer=x.dataset.buyer;S.entries=entriesFor(S.buyer);S.form=null;S.confirmDel=false;S.showBill=false;render()})});
   document.querySelectorAll("[data-qflush]").forEach(b=>b.onclick=()=>qFlush(true));
