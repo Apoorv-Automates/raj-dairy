@@ -8,6 +8,13 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<script>
+/* Phone pe "Desktop site" chalu ho to bhi phone jaisa dikhe */
+(function(){function fit(){try{var sw=Math.min(screen.width,screen.height)>0&&window.matchMedia("(pointer:coarse)").matches?(window.innerWidth>window.innerHeight?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height)):0;
+var de=document.documentElement;de.style.zoom="";var w=window.innerWidth;
+if(sw&&sw<820&&w>sw*1.25){de.style.zoom=(w/sw).toFixed(3)}}catch(e){}}
+fit();window.addEventListener("resize",fit);window.addEventListener("orientationchange",function(){setTimeout(fit,300)})})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Mukta:wght@400;600;700&display=swap">
 <style>
