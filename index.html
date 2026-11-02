@@ -1,0 +1,1760 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Raj Dairy Khata</title>
+<meta name="theme-color" content="#4DB04A">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Mukta:wght@400;600;700&display=swap">
+<style>
+/* Layout: anime-style morning farm. Illustrated layered scene on top, game-UI panels (brown outline + cream inner ring), glossy pill buttons, wooden tab bar. Single light look on purpose. */
+:root{
+  color-scheme:light;
+  --line:#4A3220; --line-soft:#8C6A48;
+  --paper:#FFFBF0; --paper2:#FFF3D6; --ring:#FFF8E6;
+  --grass:#4DB04A; --grass-hi:#7BD86A; --grass-dk:#2E7D32;
+  --sky:#7CCBF2; --barn:#D2452F; --barn-hi:#F0705A; --barn-dk:#8F2A1C;
+  --hay:#FFC94A; --hay-hi:#FFE38A; --hay-dk:#D99A12;
+  --wood:#B97A45; --wood-hi:#D9A066; --wood-dk:#7A4B26;
+  --ink:#3A2717; --muted:#7B6650;
+  --ok:#3E9E4B; --ok-soft:#DDF4D3; --bad:#E04A3B; --bad-soft:#FFE3DC; --off-soft:#EEE8DD;
+  --chalk:#29453A;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Mukta","Segoe UI",system-ui,sans-serif;
+  --drop:0 4px 0 rgba(74,50,32,.9),0 10px 18px rgba(74,50,32,.18);
+}
+html,body{height:100%}
+body{color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.4;-webkit-tap-highlight-color:transparent;
+  background-color:#F4F1DE;
+  background-image:
+   radial-gradient(ellipse 120% 60% at 50% 0%,#FFF7DF 0%,transparent 60%),
+   radial-gradient(circle at 12px 12px,rgba(77,176,74,.12) 2px,transparent 3px),
+   radial-gradient(circle at 32px 30px,rgba(255,201,74,.16) 2px,transparent 3px);
+  background-size:auto,44px 44px,44px 44px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--sky)}
+*{box-sizing:border-box}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--barn);outline-offset:2px}
+
+/* ---------- scene ---------- */
+.scene{position:relative;overflow:hidden;border-bottom:3px solid var(--line);box-shadow:0 6px 0 rgba(74,50,32,.25)}
+.scene>svg{display:block;width:100%;height:auto;max-height:250px}
+.sign{position:absolute;left:max(14px,env(safe-area-inset-left,0px));top:10px;display:grid;justify-items:center;transform-origin:50% 0}
+.sign .rope{width:70%;height:16px;border-left:3px solid var(--wood-dk);border-right:3px solid var(--wood-dk)}
+.sign .plank{position:relative;padding:4px 16px 6px;border:2.5px solid var(--line);border-radius:12px;
+  background:repeating-linear-gradient(0deg,transparent 0 7px,rgba(122,75,38,.18) 7px 8px),linear-gradient(var(--wood-hi),var(--wood) 55%,var(--wood-dk));
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.35),inset 0 -3px 0 rgba(0,0,0,.15),0 6px 12px rgba(58,39,23,.35)}
+.sign .plank::before,.sign .plank::after{content:"";position:absolute;top:6px;width:6px;height:6px;border-radius:50%;background:#5B5B5B;box-shadow:inset -1px -1px 0 #2a2a2a}
+.sign .plank::before{left:6px}.sign .plank::after{right:6px}
+.sign h1{margin:0;font-family:var(--display);font-weight:800;font-size:1.75rem;line-height:1.05;color:#FFF6DE;
+  text-shadow:0 2px 0 var(--wood-dk),2px 2px 0 var(--wood-dk),-1px -1px 0 rgba(0,0,0,.15)}
+.sign p{margin:0;text-align:center;font-size:.8rem;font-weight:800;color:var(--hay-hi);text-shadow:0 1px 0 var(--wood-dk)}
+
+/* ---------- layout ---------- */
+main{padding-block:18px 124px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:520px;margin:0 auto;display:grid;gap:16px}
+.card{position:relative;background:linear-gradient(var(--paper),var(--paper2));border:2.5px solid var(--line);border-radius:22px;padding:14px;
+  box-shadow:inset 0 0 0 3px var(--ring),inset 0 -4px 0 rgba(185,122,69,.12),var(--drop);min-width:0}
+.small{font-size:.9rem;color:var(--muted)}
+.banner{border:2.5px solid var(--line);border-radius:18px;padding:10px 14px;font-weight:700;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;box-shadow:inset 0 0 0 3px rgba(255,255,255,.5),var(--drop)}
+.banner.warn{background:linear-gradient(#FFF0EC,var(--bad-soft))}
+.banner.info{background:linear-gradient(var(--hay-hi),var(--hay))}
+
+/* glossy buttons */
+.gloss,.chunk,.nav,.kal,.step,.toggle,.save,.tabs button,.strip,.gear,.cowcard,.tile,.task,.botbtn,.botcard{position:relative;overflow:hidden;border:2.5px solid var(--line);font-weight:800;box-shadow:inset 0 2px 0 rgba(255,255,255,.55),inset 0 -4px 0 rgba(0,0,0,.14),var(--drop);transition:transform .08s}
+.gloss::after,.chunk::after,.nav::after,.kal::after,.step::after,.toggle::after,.save::after,.tabs button::after{content:"";position:absolute;left:8%;right:8%;top:3px;height:38%;border-radius:999px;background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,0));pointer-events:none}
+.gloss:active,.chunk:active,.nav:active,.kal:active,.step:active,.toggle:active,.save:active,.tabs button:active{transform:translateY(3px);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 1px 0 rgba(74,50,32,.9)}
+.chunk{border-radius:14px;padding:8px 14px;background:linear-gradient(#FFFFFF,#F1E7D3)}
+.chunk.red{background:linear-gradient(var(--barn-hi),var(--barn));color:#fff;text-shadow:0 1px 0 var(--barn-dk)}
+.chunk.green{background:linear-gradient(var(--grass-hi),var(--grass));color:#fff;text-shadow:0 1px 0 var(--grass-dk)}
+
+/* date board */
+.datebar{display:grid;grid-template-columns:58px 1fr 58px;align-items:center;gap:10px}
+.nav{height:58px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--hay-hi),var(--hay) 55%,var(--hay-dk));font-size:1.9rem;line-height:1;color:var(--wood-dk)}
+.nav:disabled{opacity:.35;filter:grayscale(.6)}
+.board{position:relative;text-align:center;padding:5px 8px 7px;color:#FFF6DE;border:2.5px solid var(--line);border-radius:14px;
+  background:repeating-linear-gradient(0deg,transparent 0 9px,rgba(122,75,38,.2) 9px 10px),linear-gradient(var(--wood-hi),var(--wood) 60%,var(--wood-dk));
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.3),var(--drop)}
+.board b{display:block;font-family:var(--display);font-size:1.5rem;line-height:1.1;text-shadow:0 2px 0 var(--wood-dk)}
+.board span{font-weight:700;font-size:.9rem}
+.tag{display:inline-block;margin-left:6px;border-radius:99px;padding:0 10px;font-size:.78rem;font-weight:800;background:linear-gradient(var(--grass-hi),var(--grass));color:#fff;border:2px solid var(--line);text-shadow:0 1px 0 var(--grass-dk)}
+.tag.old{background:linear-gradient(var(--hay-hi),var(--hay));color:var(--ink);text-shadow:none}
+
+/* kal jaisa */
+.kal{display:flex;align-items:center;gap:12px;width:100%;min-height:72px;border-radius:20px;background:linear-gradient(var(--hay-hi),var(--hay) 60%,#F7B731);padding:8px 14px;text-align:left}
+.kal b{display:block;font-family:var(--display);font-size:1.35rem;line-height:1.1}
+.kal small{display:block;font-weight:600;font-size:.88rem}
+
+/* milk cards */
+.milk{display:grid;gap:10px;padding-top:24px;margin-top:10px}
+.milk.am{background:linear-gradient(#FFE9C7,#FFF8EA 55%)}
+.milk.pm{background:linear-gradient(#DCDDFB,#F7F5FF 55%)}
+.ribbon{position:absolute;left:12px;top:-16px;display:flex;align-items:center;gap:6px;padding:2px 14px 2px 6px;border:2.5px solid var(--line);border-radius:99px;
+  background:linear-gradient(var(--grass-hi),var(--grass));color:#fff;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),0 3px 0 rgba(74,50,32,.9)}
+.pm .ribbon{background:linear-gradient(#8F8CEB,#5B57C9)}
+.ribbon h2{margin:0;font-family:var(--display);font-size:1.15rem;line-height:1.2;text-shadow:0 1px 0 rgba(0,0,0,.25)}
+.ribbon svg{margin:-10px 0 -8px}
+.mtop{display:flex;justify-content:flex-end}
+.milk .sum{font-family:var(--display);font-weight:800;font-size:1.05rem;background:#fff;border:2px solid var(--line);border-radius:99px;padding:0 12px;white-space:nowrap;position:absolute;right:12px;top:-14px;box-shadow:0 3px 0 rgba(74,50,32,.9)}
+.stepper{display:grid;grid-template-columns:60px 1fr 60px;gap:8px;align-items:stretch}
+.step{border-radius:18px;min-height:60px;font-size:2rem;line-height:1;background:linear-gradient(var(--grass-hi),var(--grass) 60%,#3E9A3C);color:#fff;text-shadow:0 2px 0 var(--grass-dk)}
+.step.minus{background:linear-gradient(#FFFFFF,#EDE3CF);color:var(--wood-dk);text-shadow:none}
+.gram .step{min-height:50px;font-size:1.6rem;background:linear-gradient(#B6EC9C,#86D46E);color:var(--grass-dk);text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.gram .step.minus{background:linear-gradient(#FFFFFF,#EDE3CF);color:var(--wood-dk)}
+.numwrap{position:relative;min-width:0}
+.numwrap input{width:100%;height:60px;border-radius:18px;border:2.5px solid var(--line);background:linear-gradient(#FFFFFF,#FFF7E3);text-align:center;font-family:var(--display);font-size:2rem;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;padding-right:54px;box-shadow:inset 0 3px 0 rgba(74,50,32,.08)}
+.gram .numwrap input{height:50px;font-size:1.5rem}
+.numwrap em{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-style:normal;font-weight:800;font-size:.72rem;color:var(--muted);background:var(--paper2);border-radius:6px;padding:0 5px}
+.stepper.off{opacity:.3;pointer-events:none}
+
+.total{display:flex;align-items:center;gap:12px;color:#fff;background:linear-gradient(var(--grass-hi),var(--grass) 55%,#3B9439);box-shadow:inset 0 0 0 3px rgba(255,255,255,.25),var(--drop)}
+.total b{display:block;font-family:var(--display);font-size:1.75rem;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 2px 0 var(--grass-dk)}
+.total span{font-weight:700;display:block;text-shadow:0 1px 0 var(--grass-dk)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{min-width:0}
+.field label{display:block;font-weight:800;margin-bottom:4px}
+.field input{width:100%;height:56px;border-radius:16px;border:2.5px solid var(--line);background:linear-gradient(#FFFFFF,#FFF7E3);padding:0 12px;font-size:1.2rem;font-weight:700;font-variant-numeric:tabular-nums;box-shadow:inset 0 3px 0 rgba(74,50,32,.08)}
+.toggle{width:100%;min-height:56px;border-radius:16px;background:linear-gradient(#FFFFFF,#EFE5D1)}
+.toggle[aria-pressed="true"]{background:linear-gradient(#E5DED2,#CFC6B6)}
+.save{width:100%;min-height:70px;border-radius:22px;color:#fff;font-family:var(--display);font-size:1.65rem;
+  background:linear-gradient(var(--barn-hi),var(--barn) 55%,#B83725);text-shadow:0 2px 0 var(--barn-dk)}
+.save.clean{background:linear-gradient(#F0FBEA,var(--ok-soft));color:var(--grass-dk);text-shadow:none}
+.save.green{background:linear-gradient(var(--grass-hi),var(--grass) 55%,#3B9439);text-shadow:0 2px 0 var(--grass-dk)}
+.save:disabled{opacity:.6}
+.err{color:var(--bad);font-weight:800;min-height:1.2em;margin:0;text-align:center}
+.del{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:center}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;font-weight:700;padding:6px}
+
+/* hisaab */
+.slate{position:relative;text-align:center;color:#F4F8EF;padding:16px 14px 14px;border-radius:18px;border:2.5px solid var(--line);
+  background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.08),transparent 60%),linear-gradient(#335447,var(--chalk));
+  box-shadow:inset 0 0 0 8px var(--wood),inset 0 0 0 10px var(--wood-dk),inset 0 0 22px 10px rgba(0,0,0,.35),var(--drop)}
+.slate p{margin:0;font-weight:700;opacity:.92}
+.slate b{display:block;font-family:var(--display);font-size:2.8rem;line-height:1.05;font-variant-numeric:tabular-nums;text-shadow:0 0 6px rgba(255,255,255,.25)}
+.slate .chalk{position:absolute;right:20px;bottom:12px;width:26px;height:7px;border-radius:3px;background:#FAFAF4;transform:rotate(-12deg);box-shadow:0 1px 0 rgba(0,0,0,.3)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{text-align:center;padding:8px;border-radius:18px}
+.stat span{display:block;font-size:.78rem;font-weight:700;color:var(--muted);line-height:1.2}
+.stat b{font-family:var(--display);font-size:1.1rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.15}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.cal .wd{font-size:.7rem;font-weight:800;text-align:center;color:var(--muted)}
+.day{aspect-ratio:1/1.1;max-width:100%;min-width:0;border:2px solid var(--line);border-radius:12px;background:linear-gradient(#fff,#F6EEDC);display:grid;place-items:center;align-content:center;padding:2px;font-variant-numeric:tabular-nums;box-shadow:inset 0 2px 0 rgba(255,255,255,.7),0 2px 0 rgba(74,50,32,.8)}
+.day b{font-family:var(--display);font-size:1.05rem;line-height:1}
+.day small{font-size:.6rem;font-weight:700;line-height:1.1}
+.day.done{background:linear-gradient(#EFFBE8,#C9EDB9)}
+.day.miss{background:linear-gradient(#F47466,var(--bad));color:#fff}
+.day.no{background:linear-gradient(#F6F2EA,#E2DACB);color:var(--muted)}
+.day.future{border-style:dashed;opacity:.45;box-shadow:none}
+.day.today{outline:3px solid var(--hay-dk);outline-offset:1px}
+.day.blank{border:0;background:transparent;box-shadow:none}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.8rem;font-weight:700}
+.legend i{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-radius:4px;vertical-align:-2px;margin-right:4px}
+.lines{display:grid;gap:4px}
+.lines div{display:flex;justify-content:space-between;gap:8px}
+.lines .sumline{border-top:2px dashed var(--line-soft);padding-top:4px;font-weight:800}
+textarea.billtxt{width:100%;min-height:180px;border:2px solid var(--line);border-radius:12px;padding:8px;font-size:.85rem;background:#fff}
+
+/* settings */
+.set{display:grid;gap:12px}
+.set h2{margin:0;font-family:var(--display);font-size:1.3rem}
+.hist{margin:0;padding:0;list-style:none;display:grid;gap:4px}
+.hist li{display:flex;justify-content:space-between;border-bottom:2px dashed #DCCDB0;padding:4px 0}
+.help ol{margin:6px 0 0;padding-left:1.3em;display:grid;gap:6px;font-weight:600}
+main.entry{padding-bottom:230px}
+select{font:inherit;color:var(--ink);-webkit-text-fill-color:var(--ink);opacity:1}
+.field input,.field select,.lg4 input,.pgrp input,.numwrap input{color:var(--ink);-webkit-text-fill-color:var(--ink)}
+.field input::placeholder{color:#9C8A74;-webkit-text-fill-color:#9C8A74}
+.field input[type=date]{font-size:1rem;padding:0 6px;min-width:0;letter-spacing:-.2px}
+.field input[type=date]::-webkit-calendar-picker-indicator{margin-left:2px;padding:0;width:18px;height:18px}
+.field select{font-size:.95rem;padding:0 6px;text-overflow:ellipsis}
+.milk .sum{position:static;justify-self:end;margin:-8px 0 -2px;right:auto;top:auto}
+@media (max-width:380px){.ribbon h2{font-size:1.02rem}}
+
+
+.cowsay{position:absolute;left:44%;top:9%;max-width:40%;font-size:.88rem;background:#fff;border:2.5px solid var(--line);border-radius:18px;padding:6px 12px;font-family:var(--display);font-weight:800;font-size:1rem;line-height:1.15;color:var(--ink);box-shadow:0 4px 0 var(--line);transform:scale(0);transform-origin:0% 100%;transition:transform .18s ease-out;pointer-events:none;z-index:3}
+.cowsay::after{content:"";position:absolute;left:10px;bottom:-11px;border:9px solid transparent;border-top-color:var(--line);border-bottom:0}
+.cowsay.show{transform:scale(1)}
+.moo{opacity:0}.shades{opacity:0;transition:opacity .2s}
+.scene.party .shades{opacity:1}.scene.talk .moo{opacity:1}
+.notes text{opacity:0}
+@media (prefers-reduced-motion:no-preference){
+ .cowdance{transform-box:fill-box;transform-origin:50% 100%;animation:cdance 1.4s ease-in-out infinite}
+ @keyframes cdance{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-5px) rotate(-3deg)}50%{transform:translateY(0) rotate(0)}75%{transform:translateY(-5px) rotate(3deg)}}
+ .cowhead{transform-box:fill-box;transform-origin:50% 85%;animation:chead 1.4s ease-in-out infinite}
+ @keyframes chead{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+ .legA,.legB{transform-box:fill-box;transform-origin:50% 0;animation:kick .7s ease-in-out infinite alternate}
+ .legB{animation-delay:-.35s}
+ @keyframes kick{from{transform:rotate(-14deg)}to{transform:rotate(12deg)}}
+ .bell{transform-box:fill-box;transform-origin:50% 0;animation:ding .35s ease-in-out infinite alternate}
+ @keyframes ding{from{transform:rotate(-18deg)}to{transform:rotate(18deg)}}
+ .cowshadow{transform-box:fill-box;transform-origin:50% 50%;animation:shad .7s ease-in-out infinite alternate}
+ @keyframes shad{to{transform:scaleX(.82)}}
+ .notes text{animation:note 2.4s linear infinite}
+ .notes text:nth-child(2){animation-delay:.8s}.notes text:nth-child(3){animation-delay:1.6s}
+ @keyframes note{0%{opacity:0;transform:translate(0,0)}20%{opacity:1}100%{opacity:0;transform:translate(14px,-34px)}}
+ .scene.party .cowdance{animation:cspin 1s ease-in-out}
+ @keyframes cspin{0%{transform:translateY(0) rotate(0)}40%{transform:translateY(-26px) rotate(-12deg)}70%{transform:translateY(-10px) rotate(14deg)}100%{transform:translateY(0) rotate(0)}}
+ .scene.party .legA,.scene.party .legB{animation-duration:.18s}
+}
+
+
+.speed{opacity:0}
+.hoof{opacity:0;transition:opacity .15s}.scene.byebye .hoof{opacity:1}.scene.byebye .legA{opacity:0}
+@media (prefers-reduced-motion:no-preference){
+ .ride{animation:ride 11s linear infinite}
+ @keyframes ride{from{transform:translateX(-414px)}to{transform:translateX(216px)}}
+ .bump{animation:bump .32s ease-in-out infinite alternate}
+ @keyframes bump{to{transform:translateY(-1.6px)}}
+ .wheel{transform-box:fill-box;transform-origin:50% 50%;animation:spin .45s linear infinite}
+ @keyframes spin{to{transform:rotate(360deg)}}
+ .speed{opacity:.85;animation:sp .3s linear infinite alternate}@keyframes sp{to{opacity:.3}}
+ .rajdance{transform-box:fill-box;transform-origin:30% 100%;animation:rdance .8s ease-in-out infinite}
+ @keyframes rdance{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-5deg) translateY(-2px)}75%{transform:rotate(5deg) translateY(-2px)}}
+ .rajhead{transform-box:fill-box;transform-origin:50% 100%;animation:rhead .8s ease-in-out infinite}
+ @keyframes rhead{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+ .armwave{transform-box:fill-box;transform-origin:100% 100%;animation:wave .4s ease-in-out infinite alternate}
+ @keyframes wave{from{transform:rotate(-25deg)}to{transform:rotate(20deg)}}
+ .scene.rajparty .rajdance{animation:rjump .7s ease-in-out}
+ @keyframes rjump{0%{transform:translateY(0) rotate(0)}40%{transform:translateY(-14px) rotate(-14deg)}100%{transform:translateY(0) rotate(0)}}
+}
+
+
+@media (prefers-reduced-motion:no-preference){
+ .hoof{transform-box:view-box;transform-origin:138px 176px;animation:hoofwave .3s ease-in-out infinite alternate}
+ @keyframes hoofwave{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
+ .scene.byebye .legA{animation:none}
+ .scene.byebye .cowhead{animation:byehead .6s ease-in-out infinite alternate}
+ @keyframes byehead{from{transform:rotate(6deg)}to{transform:rotate(16deg)}}
+ .scene.byebye .cowdance{animation:none}
+ .scene.byebye .armwave{animation-duration:.22s}
+}
+
+.savetime{font-size:.8rem;font-weight:700;display:block;margin-top:-2px;font-family:var(--body)}
+.ava{position:relative;display:inline-block;flex:none;border-radius:50%;overflow:hidden;background:#fff;border:2.5px solid var(--line);box-shadow:0 3px 0 rgba(74,50,32,.9)}
+.ava svg{position:absolute;inset:8%;width:84%;height:84%}
+.ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hello{display:flex;align-items:center;gap:12px;background:linear-gradient(#FFF3C9,var(--paper2))}
+.hello b{display:block;font-family:var(--display);font-size:1.6rem;line-height:1.05}
+.hello span{display:block;font-weight:700}
+.hello small{display:block;color:var(--muted);font-weight:600}
+.tiles3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tile{display:grid;gap:4px;text-align:center;padding:10px 6px;cursor:pointer}
+.tile span{font-size:.75rem;font-weight:800;color:var(--muted);line-height:1.15}
+.tile b{font-family:var(--display);font-size:1.05rem;line-height:1.15;overflow-wrap:anywhere}
+.sect .cnt{display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:99px;background:var(--barn);color:#fff;font-size:1rem;border:2px solid var(--line);vertical-align:3px;padding:0 6px}
+.task{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;padding:12px 14px}
+.task>i{flex:none;width:16px;height:16px;border-radius:50%;border:2.5px solid var(--line);background:var(--hay)}
+.task.red>i{background:var(--bad)}.task.info>i{background:#7CCBF2}
+.task span:nth-child(2){flex:1;min-width:0;display:grid}
+.task b{font-family:var(--display);font-size:1.12rem;line-height:1.15}
+.task small{color:var(--muted);font-weight:600}
+.task .go{font-size:1.6rem;font-weight:800;color:var(--wood-dk)}
+.done{display:flex;align-items:center;gap:12px;background:linear-gradient(#EFFBE8,#D8F2D2)}
+.done b{display:block;font-family:var(--display);font-size:1.3rem}
+.ktiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ktile{display:grid;justify-items:center;gap:2px;padding:8px 4px;border:2.5px solid var(--line);border-radius:18px;background:linear-gradient(#FFFFFF,#EFE4CC);font-weight:800;font-size:.82rem;line-height:1.1;box-shadow:0 4px 0 rgba(74,50,32,.9);cursor:pointer;text-align:center}
+.ktile[aria-pressed="true"]{background:linear-gradient(var(--hay-hi),var(--hay));transform:translateY(2px);box-shadow:0 2px 0 rgba(74,50,32,.9)}
+.stockrow{display:grid;gap:6px;padding-bottom:10px;border-bottom:2px dashed #DCCDB0}
+.sr1{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.sr1 b{font-family:var(--display);font-size:1.1rem}
+.prog.thin{height:14px}
+.prog.low i{background:linear-gradient(#F47466,var(--bad))}
+.xi svg{width:30px;height:30px}
+.htog{margin-bottom:-4px}
+
+.tabs{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.tabs button{font-size:.72rem;padding:3px 0 5px;border-radius:14px;min-width:0}
+.tabs button svg{width:26px;height:26px}
+.gear{position:absolute;right:max(10px,env(safe-area-inset-right,0px));bottom:12px;width:52px;height:52px;border-radius:50%;background:linear-gradient(#FFFFFF,#EFE4CC);display:grid;place-items:center;z-index:2;padding:0}
+.gear[aria-pressed="true"]{background:linear-gradient(var(--hay-hi),var(--hay))}
+.sect{margin:6px 0 -6px;font-family:var(--display);font-size:1.35rem}
+.countcard{display:flex;align-items:center;gap:12px}
+.countcard b{display:block;font-family:var(--display);font-size:2.4rem;line-height:1}
+.countcard .chunk{margin-left:auto}
+.cowcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer}
+.cowcard .cc{display:grid;gap:2px;min-width:0;flex:1}
+.cowcard b{font-family:var(--display);font-size:1.25rem;line-height:1.1}
+.cowcard small{font-size:.82rem;color:var(--muted)}
+.cowcard small b{font-size:.85rem;font-family:var(--body);color:var(--ink)}
+.cowcard.gone{opacity:.55}
+.cowcard .go{font-size:1.6rem;color:var(--wood-dk);font-weight:800}
+.pill{display:inline-block;justify-self:start;border:2px solid var(--line);border-radius:99px;padding:0 10px;font-size:.78rem;font-weight:800}
+.pill.milk{background:#DFF3FF}.pill.preg{background:#FFE0EC}.pill.sim{background:#FFF1C2}.pill.dry{background:#EEE8DD}.pill.off{background:#fff;color:var(--muted)}
+.plist{display:grid;gap:10px}
+.prow{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;padding-bottom:8px;border-bottom:2px dashed #DCCDB0}
+.prow>b{grid-column:1/-1;font-family:var(--display);font-size:1.1rem}
+.pgrp{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;align-items:center;min-width:0}
+.pgrp span{font-size:.72rem;font-weight:800;color:var(--muted)}
+.pgrp input{width:100%;min-width:0;height:44px;border-radius:12px;border:2.5px solid var(--line);background:#fff;text-align:center;font-family:var(--display);font-size:1.15rem;font-weight:800;padding:0 2px}
+.seg{display:grid;gap:6px}.seg.s2{grid-template-columns:1fr 1fr}.seg.s3{grid-template-columns:repeat(3,minmax(0,1fr))}.seg.s4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.seg .chip2{padding:8px 4px;border-radius:14px;font-size:.85rem;line-height:1.15}
+.field select{width:100%;height:56px;border-radius:16px;border:2.5px solid var(--line);background:linear-gradient(#FFFFFF,#FFF7E3);padding:0 10px;font-size:1.05rem;font-weight:700}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kgrid .stat b{font-size:1rem}
+.pos{color:var(--grass-dk)}.neg{color:var(--bad)}
+.bars{display:grid;gap:8px;margin-top:8px}
+.barrow{display:grid;grid-template-columns:2.6em 1fr auto;gap:8px;align-items:center;font-size:.85rem}
+.barrow div{display:grid;gap:3px}
+.bar{display:block;height:10px;border-radius:6px;border:1.5px solid var(--line);min-width:2px}
+.bar.in{background:var(--grass)}.bar.out{background:var(--barn)}
+.tblwrap{overflow-x:auto;margin-top:6px}
+.tbl{width:100%;border-collapse:collapse;font-size:.88rem;font-variant-numeric:tabular-nums}
+.tbl th{text-align:left;font-size:.75rem;color:var(--muted);border-bottom:2px solid var(--line);padding:4px}
+.tbl td{padding:6px 4px;border-bottom:1px dashed #DCCDB0;white-space:nowrap}
+.prog{height:20px;border:2.5px solid var(--line);border-radius:99px;background:#fff;overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(var(--grass-hi),var(--grass))}
+.xlist li{align-items:flex-start;gap:8px}
+details summary{cursor:pointer}
+
+.savebar{position:fixed;left:0;right:0;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:5;padding-block:18px 6px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:linear-gradient(rgba(244,241,222,0),#F4F1DE 34%)}
+.savebar .in{max-width:520px;margin:0 auto;display:grid;gap:4px}
+.savebar .save{min-height:60px}
+.savebar .err:empty{display:none}
+.savebar .err{background:#fff;border:2px solid var(--bad);border-radius:12px;padding:4px 8px}
+.chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.chips.off{opacity:.3;pointer-events:none}
+.chip2{border:2px solid var(--line);border-radius:99px;padding:3px 12px;font-weight:800;font-size:.9rem;background:linear-gradient(#FFFFFF,#EFE4CC);box-shadow:0 2px 0 rgba(74,50,32,.9)}
+.chip2[aria-pressed="true"]{background:linear-gradient(var(--hay-hi),var(--hay))}
+.chip2:active{transform:translateY(2px);box-shadow:none}
+.strip{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:10px 14px;cursor:pointer}
+.strip b{font-family:var(--display);font-size:1.5rem;line-height:1;font-variant-numeric:tabular-nums}
+.strip .go{font-size:1.6rem;font-weight:800;color:var(--wood-dk)}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.sheet{position:fixed;inset:0;z-index:30;background:rgba(58,39,23,.5);display:grid;align-items:end;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.sheet>.card{width:100%;max-width:520px;margin:0 auto;display:grid;gap:12px;max-height:86vh;overflow:auto}
+.sheet h3{margin:0;font-family:var(--display);font-size:1.4rem;line-height:1.15}
+.sheet .bigbtn{width:100%;min-height:56px;border-radius:18px;font-family:var(--display);font-size:1.2rem}
+.lg4{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center}
+.lg4 input{width:100%;height:50px;border-radius:14px;border:2.5px solid var(--line);background:#fff;text-align:center;font-family:var(--display);font-size:1.4rem;font-weight:800}
+.lg4 span{font-weight:800}
+.lg4 small{display:block;text-align:center;color:var(--muted);font-weight:700;font-size:.75rem}
+
+/* wooden tab bar */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;border-top:3px solid var(--line);
+ background:repeating-linear-gradient(0deg,transparent 0 11px,rgba(122,75,38,.25) 11px 12px),linear-gradient(var(--wood-hi),var(--wood) 50%,var(--wood-dk));
+ box-shadow:0 -6px 14px rgba(58,39,23,.2);
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:8px max(10px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px))}
+.tabs::before{content:"";position:absolute;left:0;right:0;top:-14px;height:12px;pointer-events:none;
+ background:radial-gradient(circle at 6px 12px,var(--grass) 6px,transparent 6.5px) 0 0/12px 12px,radial-gradient(circle at 6px 14px,var(--grass-dk) 7px,transparent 7.5px) 6px 0/12px 12px}
+.tabs button{border-radius:14px;padding:3px 0 5px;display:grid;justify-items:center;font-size:.72rem;min-width:0;background:linear-gradient(#FFFFFF,#EFE4CC);color:var(--ink)}
+.tabs button[aria-selected="true"]{background:linear-gradient(var(--hay-hi),var(--hay) 60%,#F2B12B)}
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));pointer-events:none;transform:translateX(-50%);background:linear-gradient(#4E3825,var(--ink));color:var(--hay-hi);padding:10px 18px;border-radius:99px;font-weight:800;z-index:7;max-width:90vw;text-align:center;border:2px solid var(--hay);box-shadow:0 8px 18px rgba(0,0,0,.25)}
+
+/* scene motion */
+@media (prefers-reduced-motion:no-preference){
+ .toast{animation:pop .25s ease-out}@keyframes pop{from{opacity:0;transform:translate(-50%,-8px)}}
+ .c1{animation:drift 60s linear infinite}.c2{animation:drift 85s linear infinite -30s}
+ @keyframes drift{from{transform:translateX(-140px)}to{transform:translateX(480px)}}
+ .tail{transform-box:fill-box;transform-origin:0% 0%;animation:wag 2.6s ease-in-out infinite}@keyframes wag{50%{transform:rotate(16deg)}}
+ .lid{transform-box:fill-box;transform-origin:50% 0%;transform:scaleY(0);animation:blink 4.5s infinite}@keyframes blink{0%,92%,100%{transform:scaleY(0)}95%{transform:scaleY(1)}}
+ .sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 3.2s ease-in-out infinite}@keyframes sway{50%{transform:rotate(4deg)}}
+ .bfly{animation:fly 9s ease-in-out infinite}@keyframes fly{0%,100%{transform:translate(0,0)}25%{transform:translate(18px,-10px)}50%{transform:translate(36px,4px)}75%{transform:translate(14px,8px)}}
+ .wing{transform-box:fill-box;transform-origin:100% 50%;animation:flap .35s ease-in-out infinite alternate}@keyframes flap{to{transform:scaleX(.35)}}
+ .sign{animation:swing 5s ease-in-out infinite}@keyframes swing{50%{transform:rotate(-2.5deg)}}
+}
+
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gCan" x1="0" x2="1"><stop offset="0" stop-color="#9AA8B4"/><stop offset=".35" stop-color="#F4F8FB"/><stop offset=".6" stop-color="#D3DCE4"/><stop offset="1" stop-color="#8795A2"/></linearGradient>
+    <linearGradient id="gCap" x1="0" x2="1"><stop offset="0" stop-color="#C79613"/><stop offset=".4" stop-color="#FFE38A"/><stop offset="1" stop-color="#D99A12"/></linearGradient>
+    <radialGradient id="gSun" cx=".4" cy=".35"><stop offset="0" stop-color="#FFF6C2"/><stop offset=".6" stop-color="#FFD54A"/><stop offset="1" stop-color="#F5A623"/></radialGradient>
+    <radialGradient id="gMoon" cx=".35" cy=".3"><stop offset="0" stop-color="#FFFBE0"/><stop offset="1" stop-color="#F3D772"/></radialGradient>
+  </defs>
+</svg>
+<div class="scene">
+  <svg viewBox="0 0 400 240" role="img" aria-label="Subah ka gaon: gaay, khaliyaan, khet, baad aur doodh ke dibbe">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5DB8EC"/><stop offset=".55" stop-color="#A9DDF7"/><stop offset="1" stop-color="#FFEFC9"/></linearGradient>
+      <radialGradient id="glow" cx="345" cy="52" r="120" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFF4B8" stop-opacity=".95"/><stop offset=".35" stop-color="#FFE9A0" stop-opacity=".45"/><stop offset="1" stop-color="#FFE9A0" stop-opacity="0"/></radialGradient>
+      <linearGradient id="mtn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FB7D9"/><stop offset="1" stop-color="#B9D7EA"/></linearGradient>
+      <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ED67A"/><stop offset="1" stop-color="#5DB55A"/></linearGradient>
+      <linearGradient id="hillNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6CC85A"/><stop offset="1" stop-color="#3E9A3C"/></linearGradient>
+      <linearGradient id="field" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9DD6A"/><stop offset="1" stop-color="#9CC34A"/></linearGradient>
+      <linearGradient id="barnWall" x1="0" x2="1"><stop offset="0" stop-color="#E05A41"/><stop offset=".7" stop-color="#C9432F"/><stop offset="1" stop-color="#9E2F20"/></linearGradient>
+      <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A4B32"/><stop offset="1" stop-color="#4E2E1E"/></linearGradient>
+      <linearGradient id="silo" x1="0" x2="1"><stop offset="0" stop-color="#A9B4BD"/><stop offset=".4" stop-color="#EEF2F5"/><stop offset="1" stop-color="#8E9AA5"/></linearGradient>
+      <linearGradient id="cowBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#F1EEE9"/><stop offset="1" stop-color="#D9D3CA"/></linearGradient>
+      <radialGradient id="cowHead" cx=".45" cy=".35" r=".7"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E7E1D8"/></radialGradient>
+      <linearGradient id="muzzle" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC9D2"/><stop offset="1" stop-color="#F29AAB"/></linearGradient>
+      <linearGradient id="horn" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E9D7B0"/><stop offset="1" stop-color="#FFF7E2"/></linearGradient>
+      <radialGradient id="eye" cx=".4" cy=".35"><stop offset="0" stop-color="#6B4A2E"/><stop offset=".6" stop-color="#3A2414"/><stop offset="1" stop-color="#1C110A"/></radialGradient>
+      <linearGradient id="post" x1="0" x2="1"><stop offset="0" stop-color="#D9A066"/><stop offset="1" stop-color="#9A6233"/></linearGradient>
+      <linearGradient id="rail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E2AE78"/><stop offset="1" stop-color="#A76D3B"/></linearGradient>
+    </defs>
+
+    <rect width="400" height="240" fill="url(#sky)"/>
+    <rect width="400" height="240" fill="url(#glow)"/>
+    <g opacity=".55" stroke="#FFF3B0" stroke-width="5" stroke-linecap="round">
+      <path d="M345 52 L250 0"/><path d="M345 52 L300 0" stroke-width="3"/><path d="M345 52 L400 10" stroke-width="4"/>
+    </g>
+    <circle cx="345" cy="52" r="24" fill="url(#gSun)" stroke="#E39A1E" stroke-width="2"/>
+    <circle cx="337" cy="44" r="7" fill="#fff" opacity=".45"/>
+
+    <!-- clouds -->
+    <g class="c1">
+      <path d="M40 58 a14 14 0 0 1 22-14 a18 18 0 0 1 32 2 a12 12 0 0 1 14 12 z" fill="#FFFFFF"/>
+      <path d="M40 58 h68 a10 6 0 0 1-12 6 h-46 a10 6 0 0 1-10-6z" fill="#D7E8F5"/>
+    </g>
+    <g class="c2" opacity=".9">
+      <path d="M180 34 a10 10 0 0 1 16-9 a13 13 0 0 1 23 2 a9 9 0 0 1 10 9 z" fill="#FFFFFF"/>
+      <path d="M180 36 h49 a8 4 0 0 1-9 4 h-32 a8 4 0 0 1-8-4z" fill="#DCEAF6"/>
+    </g>
+
+    <!-- birds -->
+    <g fill="none" stroke="#3A2717" stroke-width="1.6" stroke-linecap="round" opacity=".7">
+      <path d="M250 70 q4-4 8 0 q4-4 8 0"/><path d="M272 62 q3-3 6 0 q3-3 6 0"/>
+    </g>
+
+    <!-- mountains -->
+    <path d="M0 118 L46 82 L72 98 L118 66 L170 108 L214 86 L260 112 L400 96 V140 H0Z" fill="url(#mtn)"/>
+    <path d="M118 66 L132 77 L124 76 L118 82 L111 74 L104 77Z" fill="#fff" opacity=".85"/>
+    <path d="M46 82 L56 90 L50 89 L45 93 L40 88Z" fill="#fff" opacity=".8"/>
+
+    <!-- far hills + trees -->
+    <path d="M0 132 Q70 104 150 122 T300 116 T400 112 V170 H0Z" fill="url(#hillFar)" stroke="#3E7F35" stroke-width="1.5"/>
+    <g stroke="#2E6B2A" stroke-width="1.5">
+      <g transform="translate(26 112)"><rect x="-2" y="8" width="4" height="10" fill="#7A4B26"/><circle r="11" fill="#4E9E44"/><circle cx="-4" cy="-4" r="6" fill="#77C567" stroke="none"/></g>
+      <g transform="translate(44 116)"><rect x="-2" y="6" width="4" height="9" fill="#7A4B26"/><circle r="9" fill="#3F8E3B"/><circle cx="-3" cy="-3" r="4.5" fill="#6DBB5D" stroke="none"/></g>
+      <g transform="translate(232 112)"><rect x="-2" y="8" width="4" height="10" fill="#7A4B26"/><circle r="12" fill="#4E9E44"/><circle cx="-4" cy="-5" r="6" fill="#77C567" stroke="none"/></g>
+    </g>
+
+    <!-- crop field rows -->
+    <path d="M240 150 L400 136 V196 L262 200Z" fill="url(#field)" stroke="#6E8F2A" stroke-width="1.5"/>
+    <g stroke="#7FA236" stroke-width="2.2" opacity=".85">
+      <path d="M248 156 L400 143"/><path d="M251 163 L400 151"/><path d="M254 171 L400 160"/><path d="M257 179 L400 169"/><path d="M259 188 L400 179"/>
+    </g>
+    <g fill="#F2C94C" opacity=".9"><circle cx="300" cy="152" r="1.6"/><circle cx="330" cy="160" r="1.6"/><circle cx="360" cy="146" r="1.6"/><circle cx="380" cy="170" r="1.6"/><circle cx="315" cy="176" r="1.6"/></g>
+
+    <!-- silo -->
+    <g stroke="#4A3220" stroke-width="2">
+      <rect x="352" y="70" width="26" height="70" fill="url(#silo)"/>
+      <path d="M350 70 q15-18 30 0z" fill="#B44A32"/>
+      <path d="M352 88 h26 M352 106 h26 M352 124 h26" stroke-width="1" opacity=".5"/>
+    </g>
+
+    <!-- barn -->
+    <g stroke="#4A3220" stroke-width="2.2" stroke-linejoin="round">
+      <path d="M274 100 L312 70 L350 100 V150 H274Z" fill="url(#barnWall)"/>
+      <g stroke="#9E2F20" stroke-width="1" opacity=".55"><path d="M284 96 V150 M294 88 V150 M304 82 V150 M320 82 V150 M330 88 V150 M340 96 V150"/></g>
+      <path d="M268 104 L312 66 L356 104 L350 108 L312 76 L274 108Z" fill="url(#roof)"/>
+      <path d="M270 103 L312 67 L354 103" fill="none" stroke="#FFF6E6" stroke-width="2.5"/>
+      <rect x="302" y="84" width="20" height="14" rx="2" fill="#FFE38A"/>
+      <path d="M312 84 v14 M302 91 h20" stroke-width="1.5"/>
+      <rect x="296" y="114" width="32" height="36" fill="#F4E7D3"/>
+      <path d="M296 114 L328 150 M328 114 L296 150" stroke-width="2"/>
+      <path d="M312 114 v36" stroke-width="1.5"/>
+      <path d="M274 150 H350" stroke-width="2.5"/>
+      <g fill="#E6B84C" stroke="#A9781C" stroke-width="1"><path d="M330 150 q4-14 10-14 q8 0 10 14z"/></g>
+    </g>
+
+    <!-- near meadow -->
+    <path d="M0 168 Q90 146 190 160 T400 170 V240 H0Z" fill="url(#hillNear)" stroke="#2E7D32" stroke-width="2"/>
+
+    <!-- fence -->
+    <g stroke="#5E3A1D" stroke-width="1.5">
+      <path d="M0 172 L120 162" stroke="url(#rail)" stroke-width="6"/><path d="M0 184 L120 174" stroke="url(#rail)" stroke-width="6"/>
+      <path d="M0 172 L120 162 M0 184 L120 174" fill="none" stroke="#5E3A1D" stroke-width="1" opacity=".6"/>
+      <g fill="url(#post)"><path d="M10 162 l5-3 l5 3 v34 h-10z"/><path d="M46 159 l5-3 l5 3 v33 h-10z"/><path d="M82 156 l5-3 l5 3 v32 h-10z"/><path d="M114 153 l5-3 l5 3 v31 h-10z"/></g>
+    </g>
+
+    <!-- milk cans -->
+    <g stroke="#3A2717" stroke-width="2" stroke-linejoin="round">
+      <ellipse cx="236" cy="206" rx="34" ry="6" fill="#2E7D32" opacity=".45" stroke="none"/>
+      <g transform="translate(212 162)">
+        <path d="M4 12 h20 l4 8 v22 a4 4 0 0 1-4 4 h-20 a4 4 0 0 1-4-4 v-22z" fill="url(#gCan)"/>
+        <rect x="7" y="2" width="14" height="10" rx="2" fill="url(#gCan)"/><rect x="5" y="0" width="18" height="4" rx="2" fill="url(#gCap)"/>
+        <path d="M0 26 h28" stroke-width="1.5"/><path d="M6 16 v26" stroke="#fff" stroke-width="2.5" opacity=".7"/>
+      </g>
+      <g transform="translate(240 168) scale(.85)">
+        <path d="M4 12 h20 l4 8 v22 a4 4 0 0 1-4 4 h-20 a4 4 0 0 1-4-4 v-22z" fill="url(#gCan)"/>
+        <rect x="7" y="2" width="14" height="10" rx="2" fill="url(#gCan)"/><rect x="5" y="0" width="18" height="4" rx="2" fill="url(#gCap)"/>
+        <path d="M0 26 h28" stroke-width="1.5"/><path d="M6 16 v26" stroke="#fff" stroke-width="2.5" opacity=".7"/>
+      </g>
+    </g>
+
+    <!-- cow -->
+    <g transform="translate(96 132)" stroke="#3A2717" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+      <ellipse class="cowshadow" cx="62" cy="82" rx="56" ry="7" fill="#2E7D32" opacity=".45" stroke="none"/>
+      <g class="notes" stroke="none" fill="#7A3FD1" font-family="serif" font-weight="700"><text x="50" y="-6" font-size="16">♪</text><text x="62" y="-14" font-size="13" fill="#D2452F">♫</text><text x="40" y="-16" font-size="12" fill="#1E88E5">♪</text></g>
+      <g class="cowdance">
+      <g class="tail"><path d="M108 30 q16 8 12 34" fill="none" stroke-width="3"/><path d="M118 60 q6 4 2 12 q-8-2-6-10z" fill="#3A2717"/></g>
+      <!-- back legs -->
+      
+      <rect x="83" y="50" width="11" height="30" rx="5" fill="#E9E3DA"/><rect x="83" y="74" width="11" height="7" rx="2" fill="#4A3220"/>
+      <rect x="40" y="52" width="11" height="28" rx="5" fill="#E9E3DA"/><rect x="40" y="74" width="11" height="7" rx="2" fill="#4A3220"/>
+      <!-- body -->
+      <path d="M30 22 q36-14 76 0 q10 8 6 26 q-4 16-22 18 h-56 q-16-2-18-20 q0-16 14-24z" fill="url(#cowBody)"/>
+      <path d="M50 18 q14 6 8 22 q-14 2-20-10 q2-10 12-12z" fill="#3A2717"/>
+      <path d="M82 30 q16-6 22 8 q-2 14-16 10 q-12-6-6-18z" fill="#3A2717"/>
+      <path d="M60 52 q8 6 4 12 q-10 0-10-8z" fill="#3A2717"/>
+      <path d="M40 24 q30-10 62-2" fill="none" stroke="#fff" stroke-width="3" opacity=".8"/>
+      <ellipse cx="74" cy="64" rx="9" ry="5" fill="url(#muzzle)"/>
+      <!-- front legs -->
+      <g class="legA"><rect x="28" y="54" width="12" height="28" rx="5" fill="url(#cowBody)"/><rect x="28" y="76" width="12" height="7" rx="2" fill="#4A3220"/></g>
+      <g class="legB"><rect x="74" y="54" width="12" height="28" rx="5" fill="url(#cowBody)"/><rect x="74" y="76" width="12" height="7" rx="2" fill="#4A3220"/></g>
+      <!-- head -->
+      <g transform="translate(0 -6)"><g class="cowhead">
+        <path d="M10 6 q-10-10-4-18 q4 6 8 12z" fill="url(#horn)"/><path d="M38 6 q10-10 4-18 q-4 6-8 12z" fill="url(#horn)"/>
+        <path d="M2 18 q-16-4-18 6 q10 6 20 0z" fill="#F4EFE8"/><path d="M-12 21 q8 1 14-1" fill="none" stroke="#F29AAB" stroke-width="2.5"/>
+        <path d="M46 18 q16-4 18 6 q-10 6-20 0z" fill="#F4EFE8"/><path d="M60 21 q-8 1-14-1" fill="none" stroke="#F29AAB" stroke-width="2.5"/>
+        <path d="M24 2 c14 0 22 10 22 24 c0 14-6 26-22 26 c-16 0-22-12-22-26 c0-14 8-24 22-24z" fill="url(#cowHead)"/>
+        <path d="M24 3 c8 1 14 6 16 14 q-10 2-16-6z" fill="#3A2717"/>
+        <path d="M8 14 q-2 6 2 10" fill="none" stroke="#fff" stroke-width="2.5" opacity=".9"/>
+        <!-- eyes -->
+        <ellipse cx="15" cy="25" rx="5.2" ry="6.4" fill="url(#eye)"/><ellipse cx="33" cy="25" rx="5.2" ry="6.4" fill="url(#eye)"/>
+        <circle cx="13.2" cy="22.6" r="2.1" fill="#fff" stroke="none"/><circle cx="31.2" cy="22.6" r="2.1" fill="#fff" stroke="none"/>
+        <circle cx="16.6" cy="28" r="1" fill="#fff" stroke="none"/><circle cx="34.6" cy="28" r="1" fill="#fff" stroke="none"/>
+        <path class="lid" d="M9.6 18.8 h10.8 v12.6 h-10.8z" fill="#EDE7DE" stroke="none"/><path class="lid" d="M27.6 18.8 h10.8 v12.6 h-10.8z" fill="#EDE7DE" stroke="none"/>
+        <path d="M10 18 q5-4 10-1 M28 17 q5-3 10 1" fill="none" stroke-width="1.8"/>
+        <ellipse cx="9" cy="33" rx="4" ry="2.4" fill="#FF9FB0" opacity=".65" stroke="none"/><ellipse cx="39" cy="33" rx="4" ry="2.4" fill="#FF9FB0" opacity=".65" stroke="none"/>
+        <!-- muzzle -->
+        <path d="M8 38 c0-6 8-8 16-8 s16 2 16 8 c0 8-8 12-16 12 s-16-4-16-12z" fill="url(#muzzle)"/>
+        <ellipse cx="18" cy="38" rx="2.2" ry="3" fill="#A8566A" stroke="none"/><ellipse cx="30" cy="38" rx="2.2" ry="3" fill="#A8566A" stroke="none"/>
+        <path d="M20 45 q4 3 8 0" fill="none" stroke-width="1.8"/>
+        <ellipse class="moo" cx="24" cy="45" rx="4.5" ry="3.5" fill="#7A2E3E" stroke-width="1.5"/>
+        <g class="shades" stroke="none"><rect x="6" y="19" width="16" height="11" rx="5" fill="#111"/><rect x="26" y="19" width="16" height="11" rx="5" fill="#111"/><path d="M22 23 h4" stroke="#111" stroke-width="2.5"/><path d="M9 21 l4 0" stroke="#fff" stroke-width="1.5" opacity=".7"/><path d="M29 21 l4 0" stroke="#fff" stroke-width="1.5" opacity=".7"/></g>
+        <path d="M14 33 q10-3 20 0" fill="none" stroke="#fff" stroke-width="1.5" opacity=".7"/>
+        <!-- bell -->
+        <path d="M14 52 q10 6 20 0" fill="none" stroke="#B5402F" stroke-width="3.5"/>
+        <g class="bell"><path d="M19 55 q5-4 10 0 l2 9 h-14z" fill="url(#gCap)"/><circle cx="24" cy="65" r="1.8" fill="#7A4B26"/></g>
+      </g></g>
+      <g class="hoof"><g transform="translate(42 50) rotate(-150)"><rect x="-6" y="0" width="12" height="30" rx="5" fill="url(#cowBody)"/><rect x="-6" y="24" width="12" height="7" rx="2" fill="#4A3220"/></g></g>
+      </g>
+      <rect id="cowHit" x="-22" y="-26" width="150" height="116" fill="transparent" stroke="none" pointer-events="all" style="cursor:pointer"/>
+    </g>
+
+
+    <!-- Raj on electric scooter -->
+    <g transform="translate(0 233)"><g class="ride"><g transform="translate(262 0)"><g class="bump" stroke="#3A2717" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+      <ellipse cx="0" cy="1" rx="34" ry="3.5" fill="#2E7D32" opacity=".45" stroke="none"/>
+      <g class="speed" stroke="#fff" stroke-width="2" opacity=".85"><path d="M-48 -14 h-14"/><path d="M-46 -22 h-10"/><path d="M-50 -6 h-12"/></g>
+      <!-- milk cans on back rack -->
+      <path d="M-40 -18 h18" stroke-width="2.5"/>
+      <g transform="translate(-40 -36)"><path d="M2 5 h9 l2 4 v9 a2 2 0 0 1-2 2 h-9 a2 2 0 0 1-2-2 v-9z" fill="url(#gCan)"/><rect x="3" y="0" width="7" height="5" rx="1" fill="url(#gCan)"/><rect x="2.5" y="-1" width="8" height="2" rx="1" fill="url(#gCap)"/></g>
+      <g transform="translate(-29 -36)"><path d="M2 5 h9 l2 4 v9 a2 2 0 0 1-2 2 h-9 a2 2 0 0 1-2-2 v-9z" fill="url(#gCan)"/><rect x="3" y="0" width="7" height="5" rx="1" fill="url(#gCan)"/><rect x="2.5" y="-1" width="8" height="2" rx="1" fill="url(#gCap)"/></g>
+      <!-- scooter body -->
+      <path d="M-30 -10 q2-12 16-12 h20 q8 0 12 6 l10 4 v4 h-58z" fill="#2BB673"/>
+      <path d="M-14 -22 q4-6 16-6 q6 0 6 6z" fill="#2F2F2F"/>
+      <path d="M-4 -18 l-4 6 h4 l-3 6" fill="none" stroke="#FFE38A" stroke-width="2.2"/>
+      <path d="M20 -12 l8 -30" stroke-width="3" stroke="#4A4A4A"/>
+      <path d="M22 -44 h12" stroke-width="3.5" stroke="#2F2F2F"/>
+      <circle cx="31" cy="-34" r="3" fill="#FFF6A8"/>
+      <rect x="22" y="-26" width="12" height="7" rx="1.5" fill="#fff" stroke-width="1.2"/><text x="28" y="-20.6" font-size="5.2" text-anchor="middle" fill="#2B2118" stroke="none" font-family="sans-serif" font-weight="700">RAJ</text>
+      <!-- wheels -->
+      <g transform="translate(-20 -6)"><circle r="7" fill="#2F2F2F"/><g class="wheel"><circle r="3.2" fill="#BFC7CF"/><path d="M0 -6 v12 M-6 0 h12" stroke="#BFC7CF" stroke-width="1.2"/></g></g>
+      <g transform="translate(22 -6)"><circle r="7" fill="#2F2F2F"/><g class="wheel"><circle r="3.2" fill="#BFC7CF"/><path d="M0 -6 v12 M-6 0 h12" stroke="#BFC7CF" stroke-width="1.2"/></g></g>
+      <!-- Raj -->
+      <g class="rajdance">
+        <path d="M-2 -26 q6 2 10 8 l8 2" fill="none" stroke="#F4F1EA" stroke-width="6"/>
+        <path d="M14 -16 h6" stroke="#6B3E1F" stroke-width="3"/>
+        <path d="M-10 -26 q-2 -16 6 -24 h12 q6 8 2 24z" fill="#FF8C1A"/>
+        <path d="M-6 -50 l14 22 l-4 2 l-14 -20z" fill="#E53935" stroke-width="1.2"/><path d="M-2 -44 l3 4 M2 -38 l3 4" stroke="#fff" stroke-width="1.5"/>
+        <g class="armwave"><path d="M-6 -46 q-10 -6 -12 -18" fill="none" stroke="#FF8C1A" stroke-width="5"/><path d="M-18 -64 l-2 -6" stroke="#C98A5B" stroke-width="4.5"/><circle cx="-20.5" cy="-71" r="3.2" fill="#C98A5B"/></g>
+        <path d="M8 -46 q8 2 14 2 l6 -2" fill="none" stroke="#FF8C1A" stroke-width="5"/><circle cx="29" cy="-44" r="2.8" fill="#C98A5B"/>
+        <g class="rajhead">
+          <rect x="-2" y="-56" width="6" height="6" fill="#C98A5B" stroke="none"/>
+          <circle cx="1" cy="-63" r="10" fill="#C98A5B"/>
+          <ellipse cx="-9" cy="-63" rx="2" ry="3" fill="#C98A5B"/>
+          <path d="M-9 -66 q0 -12 11 -12 q11 0 11 11 l-2 -1 q-8 -5 -20 2z" fill="#F2C14E"/><path d="M-10 -66 h22" stroke-width="1.6"/><path d="M8 -70 q6 0 7 4" fill="none" stroke="#fff" stroke-width="1.5" opacity=".8"/>
+          <circle cx="0" cy="-63" r="1.4" fill="#2B2118" stroke="none"/><circle cx="6" cy="-63" r="1.4" fill="#2B2118" stroke="none"/>
+          <path d="M-2 -59 q5 -2 10 0" fill="#2B2118" stroke-width="1.4"/>
+          <path d="M0 -56 q3 3 7 0" fill="#fff" stroke-width="1.2"/>
+          <ellipse cx="-3" cy="-59" rx="1.8" ry="1" fill="#E57373" opacity=".6" stroke="none"/>
+        </g>
+      </g>
+      <rect id="rajHit" x="-52" y="-80" width="92" height="84" fill="transparent" stroke="none" pointer-events="all" style="cursor:pointer"/>
+    </g></g></g></g>
+    <!-- grass tufts + flowers -->
+    <g fill="#2F8A30" stroke="none">
+      <path class="sway" d="M14 230 q3-16 6 0 q2-12 5 0 q3-10 5 0z"/><path class="sway" d="M70 226 q3-14 6 0 q2-10 5 0z"/>
+      <path class="sway" d="M196 232 q3-16 6 0 q2-12 5 0 q3-10 5 0z"/><path class="sway" d="M372 228 q3-14 6 0 q2-10 5 0z"/><path class="sway" d="M300 234 q3-12 6 0 q2-10 5 0z"/>
+    </g>
+    <g stroke="#3A2717" stroke-width="1">
+      <g transform="translate(46 212)"><circle r="3" fill="#FF8FA3"/><circle r="1.2" fill="#FFE38A"/></g>
+      <g transform="translate(176 222)"><circle r="3" fill="#FFFFFF"/><circle r="1.2" fill="#FFC94A"/></g>
+      <g transform="translate(344 214)"><circle r="3" fill="#C9A0FF"/><circle r="1.2" fill="#FFE38A"/></g>
+      <g transform="translate(270 228)"><circle r="2.6" fill="#FF8FA3"/><circle r="1" fill="#FFE38A"/></g>
+    </g>
+
+    <!-- butterfly -->
+    <g class="bfly" transform="translate(190 120)">
+      <g transform="translate(0 0)">
+        <path class="wing" d="M0 0 q-9-9-12 0 q3 7 12 0z" fill="#FFB347" stroke="#3A2717" stroke-width="1"/>
+        <path d="M0 0 q9-9 12 0 q-3 7-12 0z" fill="#FFD27F" stroke="#3A2717" stroke-width="1"/>
+      </g>
+    </g>
+  </svg>
+  <div class="cowsay" id="cowSay" aria-live="polite"></div>
+  <button class="gear" id="gear" aria-label="Setting" aria-pressed="false"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M15 3l3 3h4v4l3 3-3 3v4h-4l-3 3-3-3H8v-4l-3-3 3-3V6h4z" fill="url(#gCap)" stroke="#4A3220" stroke-width="2.2" stroke-linejoin="round"/><circle cx="15" cy="13" r="4" fill="#fff" stroke="#4A3220" stroke-width="2.2"/></svg></button>
+  <div class="sign"><div class="rope"></div><div class="plank"><h1>Raj Dairy</h1><p id="shopName">Pandey Ji ki Dukan</p></div></div>
+</div>
+
+<main id="app"><div class="card"><p style="margin:0;font-weight:700">Khata khul raha hai…</p></div></main>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" aria-selected="true" data-tab="aaj"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M4 14 L15 5 L26 14 V26 H4z" fill="#FFF3D6" stroke="#4A3220" stroke-width="2.2" stroke-linejoin="round"/><path d="M2 15 L15 4 L28 15" fill="none" stroke="#D2452F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="12" y="17" width="6" height="9" fill="#B97A45" stroke="#4A3220" stroke-width="2"/></svg>Aaj</button>
+  <button role="tab" aria-selected="false" data-tab="entry"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M9 6h12v4l3 5v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V15l3-5z" fill="url(#gCan)" stroke="#4A3220" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 6h12v4H9z" fill="url(#gCap)" stroke="#4A3220" stroke-width="2.2"/></svg>Doodh</button>
+  <button role="tab" aria-selected="false" data-tab="gaay"><svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 12 q-6-6-2-10 q3 4 6 7z M38 12 q6-6 2-10 q-3 4-6 7z" fill="#FFF7E2" stroke="#4A3220" stroke-width="2.5"/><rect x="11" y="8" width="26" height="34" rx="13" fill="#fff" stroke="#4A3220" stroke-width="3"/><path d="M24 9 q8 1 11 9 q-8 1-11-9z" fill="#4A3220"/><circle cx="18" cy="22" r="3" fill="#3A2414"/><circle cx="30" cy="22" r="3" fill="#3A2414"/><ellipse cx="24" cy="34" rx="11" ry="7.5" fill="#FFC9D2" stroke="#4A3220" stroke-width="2.5"/></svg>Gaay</button>
+  <button role="tab" aria-selected="false" data-tab="kharcha"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M11 5h8l-2 4h-4z" fill="#D99A12" stroke="#4A3220" stroke-width="2"/><path d="M13 9 C5 12 4 26 15 26 C26 26 25 12 17 9z" fill="url(#gCap)" stroke="#4A3220" stroke-width="2.2"/><path d="M12 15h6M12 18h6M13 15c4 0 4 3 0 3l5 4" fill="none" stroke="#4A3220" stroke-width="1.8" stroke-linecap="round"/></svg>Kharcha</button>
+  <button role="tab" aria-selected="false" data-tab="hisaab"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="5" y="17" width="5" height="9" fill="#E2483A" stroke="#4A3220" stroke-width="2"/><rect x="12.5" y="12" width="5" height="14" fill="#FFC94A" stroke="#4A3220" stroke-width="2"/><rect x="20" y="7" width="5" height="19" fill="#4DB04A" stroke="#4A3220" stroke-width="2"/><path d="M4 12 L12 6 L17 9 L25 3" fill="none" stroke="#4A3220" stroke-width="2" stroke-linecap="round"/></svg>Hisaab</button>
+</nav>
+
+<script>
+/* ---- Phone storage (no login): replaces Claude storage ---- */
+(function(){
+const KEY="rdk_db_v1",IMG="rdk_img_";
+let docs={};try{docs=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(_){docs={}}
+const subs=[];
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(docs))}catch(e){throw{code:"too_large",message:"Phone me jagah kam hai"}}}
+function snap(id,d){return{id,exists:!!d,data:()=>d?JSON.parse(JSON.stringify(d)):d,metadata:{}}}
+function notify(){subs.slice().forEach(f=>setTimeout(f,0))}
+const db={
+ doc:p=>({
+  get:async()=>snap(p.split("/")[1],docs[p]),
+  set:async b=>{const old=docs[p];docs[p]=JSON.parse(JSON.stringify(b));try{persist()}catch(e){if(old===undefined)delete docs[p];else docs[p]=old;throw e}notify()},
+  delete:async()=>{const old=docs[p];delete docs[p];try{persist()}catch(e){docs[p]=old;throw e}notify()},
+  onSnapshot:n=>{const f=()=>n(snap(p.split("/")[1],docs[p]));subs.push(f);setTimeout(f,0);return()=>{const i=subs.indexOf(f);if(i>=0)subs.splice(i,1)}}
+ }),
+ collection:c=>({onSnapshot:n=>{const f=()=>n({docs:Object.keys(docs).filter(k=>k.startsWith(c+"/")).map(k=>snap(k.slice(c.length+1),docs[k]))});subs.push(f);setTimeout(f,0);return()=>{const i=subs.indexOf(f);if(i>=0)subs.splice(i,1)}}})
+};
+const toData=b=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(b)});
+const assets={upload:async blob=>{const id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);const d=await toData(blob);try{localStorage.setItem(IMG+id,d)}catch(e){throw{code:"too_large"}}return{id}}};
+async function giveFile(name,data,type){
+  const blob=new Blob([data],{type:type||"text/plain"});
+  try{const f=new File([blob],name,{type:type||"text/plain"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});return{status:"saved"}}}catch(e){if(e&&e.name==="AbortError")return{status:"cancelled"}}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);return{status:"saved"};
+}
+window.RDK={
+  img:id=>{try{return localStorage.getItem(IMG+id)||""}catch(_){return""}},
+  giveFile,
+  backup:()=>{const imgs={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(IMG))imgs[k.slice(IMG.length)]=localStorage.getItem(k)}}catch(_){}
+    return JSON.stringify({app:"RajDairyKhata",v:1,at:new Date().toISOString(),docs,imgs})},
+  restore:txt=>{const o=JSON.parse(txt);if(!o||o.app!=="RajDairyKhata"||typeof o.docs!=="object")throw new Error("bad");
+    const keep=docs;docs=o.docs;try{persist()}catch(e){docs=keep;throw e}
+    try{Object.entries(o.imgs||{}).forEach(([k,v])=>localStorage.setItem(IMG+k,v))}catch(_){}
+    notify();return Object.keys(docs).filter(k=>k.startsWith("entries/")).length},
+  count:()=>Object.keys(docs).length
+};
+window.claude={use:async n=>n==="db"?db:n==="user"?{can:async()=>true}:n==="assets"?assets:n==="downloads"?{save:async r=>giveFile(r.filename,r.data,"text/csv")}:null};
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(_){}
+if("serviceWorker" in navigator&&location.protocol==="https:")window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+})();
+</script>
+<script>
+(function(){
+const START="2026-10-01";
+const MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DAY=["Ravi","Som","Mangal","Budh","Guru","Shukra","Shani"];
+const WD=["Ra","So","Ma","Bu","Gu","Shu","Sha"];
+const $=s=>document.querySelector(s);
+const app=$("#app");
+const pad=n=>String(n).padStart(2,"0");
+const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const parse=s=>{const[a,b,c]=s.split("-").map(Number);return new Date(a,b-1,c)};
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return iso(d)};
+const today=()=>iso(new Date());
+const rs=n=>(n<0?"−":"")+"₹"+Math.abs(Math.round(n)).toLocaleString("en-IN");
+const splitLG=v=>{v=Number(v)||0;let L=Math.floor(v+1e-9),G=Math.round((v-L)*1000);if(G>=1000){L++;G=0}return[L,G]};
+const lt=n=>{const[L,G]=splitLG(n);return G?`${L.toLocaleString("en-IN")} L ${G} g`:`${L.toLocaleString("en-IN")} L`};
+const ltS=n=>{const[L,G]=splitLG(n);return G?`${L}.${String(G).padStart(3,"0").replace(/0+$/,"")}`:String(L)};
+const num=v=>{if(v===""||v==null)return null;const n=Number(String(v).replace(",","."));return isFinite(n)?n:NaN};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtD=s=>{const d=parse(s);return d.getDate()+" "+MON[d.getMonth()].slice(0,3)+" "+d.getFullYear()};
+
+const S={tab:"aaj",health:{},stock:{},fixed:{},hview:"pandey",assets:null,date:today(),month:today().slice(0,7),entries:{},settings:null,db:null,ready:false,canWrite:true,form:null,confirmDel:false,showBill:false,showList:false,cows:{},exp:{},prod:{},pdate:today(),pform:null,ef:null,emonth:null,pk:null,pym:null};
+if(S.date<START){S.date=START;S.month=START.slice(0,7)}
+const shop=()=>(S.settings&&S.settings.shop)||"Pandey Ji ki Dukan";
+
+function rateFor(date){
+  const r=(S.settings&&S.settings.rates||[]).slice().sort((a,b)=>a.from<b.from?-1:1);
+  let v=r.length?r[0].rate:0;for(const x of r){if(x.from<=date)v=x.rate}return Number(v)||0;
+}
+const curRate=()=>rateFor(today());
+const litres=e=>e?(Number(e.s)||0)+(Number(e.e)||0):0;
+function missingDays(){const out=[];let d=START;const t=today();while(d<t){if(!S.entries[d])out.push(d);d=addDays(d,1)}return out}
+function monthCalc(ym){
+  const first=ym+"-01";const[y,m]=ym.split("-").map(Number);
+  const last=ym+"-"+pad(new Date(y,m,0).getDate());
+  let prev=Number(S.settings&&S.settings.opening)||0,sub=0,sha=0,amt=0,paid=0,days=0;
+  for(const[d,e]of Object.entries(S.entries)){
+    if(d<START)continue;const val=litres(e)*rateFor(d),p=Number(e.p)||0;
+    if(d<first)prev+=val-p;
+    else if(d<=last){sub+=Number(e.s)||0;sha+=Number(e.e)||0;amt+=val;paid+=p;if(!e.no&&litres(e)>0)days++}
+  }
+  return{first,last,prev,sub,sha,kul:sub+sha,amt,paid,days,baaki:prev+amt-paid};
+}
+
+function setTab(t){S.tab=t;S.confirmDel=false;closeSheet();document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));const g=$("#gear");if(g)g.setAttribute("aria-pressed",t==="setting");render();window.scrollTo(0,0)}
+$("#gear").addEventListener("click",()=>setTab("setting"));
+const MOO=["Mooo! Aaj ka doodh bhara ki nahi?","Main naach rahi hoon, aap hisaab rakho!","Chara do, doodh lo — seedhi deal!","Pandey Ji se paisa liya? Moo-ney!","Mera dance free hai, doodh nahi!","Main hoon cool gaay!","Tika lagwa do, phir aur naachungi!","Bhusa khatam? Mera mood bhi khatam!"];
+let mooT,mooI=-1;
+function cowSay(txt,party){const sc=document.querySelector(".scene"),b=$("#cowSay");if(!sc||!b)return;b.textContent=txt;b.classList.add("show");sc.classList.add("talk");if(party){sc.classList.remove("party");void sc.offsetWidth;sc.classList.add("party")}
+  clearTimeout(mooT);mooT=setTimeout(()=>{b.classList.remove("show");sc.classList.remove("talk","party")},2600)}
+$("#cowHit").addEventListener("click",()=>{mooI=(mooI+1+Math.floor(Math.random()*(MOO.length-1)))%MOO.length;cowSay(MOO[mooI],true)});
+setTimeout(()=>cowSay("Ram Ram! Mooo!",false),900);
+/* cow waves bye when Raj passes */
+let byeOn=false;
+setInterval(()=>{
+  const r=document.querySelector(".ride"),sc=document.querySelector(".scene");if(!r||!sc)return;
+  const m=getComputedStyle(r).transform;if(!m||m==="none"){if(byeOn){byeOn=false;sc.classList.remove("byebye")}return}
+  const tx=Number(m.split(",")[4])||0,x=262+tx;
+  const near=x>120&&x<300;
+  if(near&&!byeOn){byeOn=true;sc.classList.add("byebye");if(!$("#cowSay").classList.contains("show")||$("#cowSay").textContent.startsWith("Bye"))cowSay(["Bye bye Raj! Jaldi aana!","Bye Raj! Doodh dhyan se le jaana!","Bye bye! Pandey Ji ko Ram Ram kehna!"][Math.floor(Math.random()*3)],false)}
+  if(!near&&byeOn){byeOn=false;sc.classList.remove("byebye")}
+},250);
+
+const RAJ=["Raj: Peep peep! Doodh Pandey Ji ke paas ja raha hai!","Raj: Electric scooter — na petrol, na dhuaan!","Raj: Chachu, aaj ka hisaab pakka!","Raj: Gauri naache to main bhi naachu!","Raj: Helmet pehna hai, tension mat lo!","Raj: Doodh time pe, mood mast!"];let rajI=-1;
+$("#rajHit").addEventListener("click",ev=>{ev.stopPropagation();rajI=(rajI+1)%RAJ.length;const sc=document.querySelector(".scene");cowSay(RAJ[rajI],false);sc.classList.remove("rajparty");void sc.offsetWidth;sc.classList.add("rajparty");setTimeout(()=>sc.classList.remove("rajparty"),800)});
+
+
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
+function banners(){
+  let h="";
+  if(qCount())h+=`<div class="banner info"><span>${qCount()} cheez phone me rakhi hai — net aate hi chali jayegi</span><button class="chunk" data-qflush="1">Abhi bhejo</button></div>`;
+  if(!S.db&&S.ready)h+=`<div class="banner warn">Data save nahi ho sakta. Phone ka browser (Chrome) update karke kholo.</div>`;
+  else if(!S.canWrite)h+=`<div class="banner warn">Aap sirf dekh sakte ho.</div>`;
+  if(S.ready&&S.db&&!curRate()&&S.tab!=="setting")h+=`<div class="banner info">Pehle doodh ka rate likho<button class="chunk" data-go="setting">Rate likho ›</button></div>`;
+  return h;
+}
+let tt;function toast(m){if(QFLAG){m="Net nahi hai — phone me rakh liya. Net aate hi apne aap chala jayega";QFLAG=false}document.querySelectorAll(".toast").forEach(x=>x.remove());const el=document.createElement("div");el.className="toast";el.textContent=m;document.body.appendChild(el);clearTimeout(tt);tt=setTimeout(()=>el.remove(),2200)}
+
+/* entry */
+function setLG(k,v){if(v==null||v===""){S.form[k+"L"]="";S.form[k+"G"]="";return}const[L,G]=splitLG(v);S.form[k+"L"]=String(L);S.form[k+"G"]=G?String(G):""}
+function valLG(k){const f=S.form,L=num(f[k+"L"]),G=num(f[k+"G"]);if(L===null&&G===null)return null;if(isNaN(L)||isNaN(G))return NaN;return (L||0)+(G||0)/1000}
+const emptyLG=k=>S.form[k+"L"]===""&&S.form[k+"G"]==="";
+function loadForm(){const e=S.entries[S.date];S.form={p:e&&e.p?String(e.p):"",no:!!(e&&e.no),dirty:false};setLG("s",e&&!e.no?e.s:null);setLG("e",e&&!e.no?e.e:null)}
+function nearestFilled(date){
+  const ks=Object.keys(S.entries).filter(k=>k!==date&&k>=START&&!S.entries[k].no&&litres(S.entries[k])>0).sort();
+  if(!ks.length)return null;const before=ks.filter(k=>k<date);return before.length?before[before.length-1]:ks[0];
+}
+function sheet(html,wire){closeSheet();const el=document.createElement("div");el.className="sheet";el.id="sheet";el.innerHTML=`<div class="card" role="dialog" aria-modal="true">${html}</div>`;document.body.appendChild(el);el.addEventListener("click",ev=>{if(ev.target===el)closeSheet()});wire(el)}
+function closeSheet(){const el=$("#sheet");if(el)el.remove()}
+function guard(fn){
+  const w=S.form&&S.form.dirty?"e":(S.pform&&S.pform.dirty?"p":null);
+  if(!w)return fn();
+  const dd=parse(w==="e"?S.date:S.pdate);
+  sheet(`<h3>${w==="e"?"Ye entry abhi save nahi hui!":"Gaay ka doodh abhi save nahi hua!"}</h3><p style="margin:0">${dd.getDate()} ${MON[dd.getMonth()].slice(0,3)} ka likha hua mit jayega.</p>
+   <button class="save bigbtn" id="gSave">SAVE karke aage jao</button>
+   <button class="toggle bigbtn" id="gDrop">Save mat karo, chhodo</button>
+   <button class="link" id="gStay">Ruko, wapas jao</button>`,el=>{
+    el.querySelector("#gSave").onclick=async()=>{closeSheet();const ok=w==="e"?await saveEntry():await saveProd();if(ok)fn();else toast("Save nahi hua — pehle galti theek karo")};
+    el.querySelector("#gDrop").onclick=()=>{closeSheet();if(w==="e")S.form=null;else S.pform=null;fn()};
+    el.querySelector("#gStay").onclick=closeSheet;
+  });
+}
+function rangesText(days){
+  const out=[];let st=null,pv=null;
+  for(const d of days){if(st&&addDays(pv,1)===d){pv=d;continue}if(st)out.push([st,pv]);st=pv=d}
+  if(st)out.push([st,pv]);
+  const f=x=>{const d=parse(x);return d.getDate()+" "+MON[d.getMonth()].slice(0,3)};
+  return out.map(([a,b])=>a===b?f(a):f(a)+" – "+f(b)).join(", ");
+}
+function openBulk(){
+  const days=missingDays();if(!days.length)return;
+  const src=nearestFilled(addDays(today(),1));const e=src?S.entries[src]:null;
+  const [sL,sG]=splitLG(e?e.s:0),[eL,eG]=splitLG(e?e.e:0);
+  sheet(`<h3>${days.length} khali din ek saath bharo</h3>
+   <p class="small" style="margin:0">Din: <b style="color:var(--ink)">${rangesText(days)}</b></p>
+   <div class="lg4"><span></span><small>Litre</small><small>Gram</small>
+    <span>Subah</span><input id="bsL" inputmode="numeric" value="${e?sL:""}" aria-label="Subah litre"><input id="bsG" inputmode="numeric" value="${e&&sG?sG:""}" aria-label="Subah gram">
+    <span>Shaam</span><input id="beL" inputmode="numeric" value="${e?eL:""}" aria-label="Shaam litre"><input id="beG" inputmode="numeric" value="${e&&eG?eG:""}" aria-label="Shaam gram"></div>
+   <p class="small" style="margin:0">Har din ye doodh bhar jayega. Baad me kisi bhi din ko alag se badal sakte ho.</p>
+   <p class="err" id="bErr"></p>
+   <button class="save green bigbtn" id="bGo">${days.length} din bharo</button>
+   <button class="link" id="bNo">Ruko, abhi nahi</button>`,el=>{
+    el.querySelectorAll("input").forEach(i=>i.addEventListener("input",()=>{i.value=i.value.replace(/[^0-9]/g,"")}));
+    el.querySelector("#bNo").onclick=closeSheet;
+    el.querySelector("#bGo").onclick=async()=>{
+      const g=id=>num(el.querySelector(id).value)||0;
+      const sv=g("#bsL")+g("#bsG")/1000,ev=g("#beL")+g("#beG")/1000,er=el.querySelector("#bErr");
+      if(g("#bsG")>999||g("#beG")>999){er.textContent="Gram 0 se 999 ke beech likho";return}
+      if(sv+ev<=0){er.textContent="Subah ya shaam ka doodh likho";return}
+      if(sv>100||ev>100){er.textContent="Litre 0 se 100 ke beech likho";return}
+      const btn=el.querySelector("#bGo");btn.disabled=true;let n=0;
+      const r3=x=>Math.round(x*1000)/1000;
+      for(const d of days){
+        if(S.entries[d])continue;
+        btn.textContent=`Bhar raha hai… ${n+1}/${days.length}`;
+        const body={s:r3(sv),e:r3(ev),p:0,no:false,at:Date.now(),bulk:true};
+        try{await writeDoc("entries/"+d,body);S.entries[d]=body;n++}
+        catch(x){er.textContent=`${n} din bhare gaye. Baaki ke liye: `+errText(x);btn.disabled=false;btn.textContent="Baaki din phir bharo";render();return}
+      }
+      closeSheet();S.form=null;toast(`✔ ${n} din bhar diye`);render();
+    };
+  });
+}
+function lastFilled(date){const ks=Object.keys(S.entries).filter(k=>k<date&&k>=START&&!S.entries[k].no&&litres(S.entries[k])>0).sort();return ks.length?ks[ks.length-1]:null}
+function formLitres(){if(S.form.no)return 0;const a=valLG("s"),b=valLG("e");if(isNaN(a)||isNaN(b))return NaN;return (a||0)+(b||0)}
+
+function renderEntry(){
+  if(!S.form)loadForm();
+  const f=S.form,d=parse(S.date),t=today(),isToday=S.date===t,saved=!!S.entries[S.date];
+  const miss=missingDays().filter(x=>x!==S.date);
+  const r=rateFor(S.date),kul=formLitres(),k=nearestFilled(S.date),yest=addDays(S.date,-1);
+  const firstTime=Object.keys(S.entries).length===0;
+  let kal="";
+  if(k&&!f.no&&emptyLG("s")&&emptyLG("e")){const e=S.entries[k],dd=parse(k);
+    kal=`<button class="kal" id="kal" data-k="${k}"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#fff" stroke="#4A3220" stroke-width="3"/><path d="M11 21a9 9 0 1 0 3-7M11 9v6h6" fill="none" stroke="#4A3220" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>${k===yest?"Kal jaisa bharo":(dd.getDate()+" "+MON[dd.getMonth()].slice(0,3)+" jaisa bharo")}</b><small>Subah ${lt(e.s)} · Shaam ${lt(e.e)} (${dd.getDate()} ${MON[dd.getMonth()].slice(0,3)})</small></span></button>`}
+  const cm=monthCalc(t.slice(0,7));
+  app.innerHTML=banners()+`
+  ${!firstTime?`<button class="card strip" id="toH"><span><span class="small" style="display:block;font-weight:700">Pandey Ji pe baaki (aaj tak)</span><b>${rs(cm.baaki)}</b></span><span class="go">›</span></button>`:""}
+  ${firstTime&&S.db?`<div class="card help"><b style="font-family:var(--display);font-size:1.2rem">Kaise chalaye? Bas 3 kaam</b><ol><li>Setting me rate likho (ek baar)</li><li>Subah aur shaam ka doodh bharo</li><li>Laal SAVE button dabao</li></ol></div>`:""}
+  <div class="datebar">
+    <button class="nav" id="prev" aria-label="Pichhla din" ${S.date<=START?"disabled":""}>‹</button>
+    <div class="board"><b>${d.getDate()} ${MON[d.getMonth()].slice(0,3)} ${d.getFullYear()}</b><span>${DAY[d.getDay()]}var</span>${isToday?'<span class="tag">Aaj</span>':'<span class="tag old">Purana din</span>'}</div>
+    <button class="nav" id="next" aria-label="Agla din" ${isToday?"disabled":""}>›</button>
+  </div>
+  ${!isToday?`<button class="toggle" id="goToday">Aaj pe wapas jao</button>`:""}
+  ${kal}
+  ${milkCard("s","Subah ka doodh","am",sunIcon())}
+  ${milkCard("e","Shaam ka doodh","pm",moonIcon())}
+  <div class="card total"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><path d="M10 8h20v5l4 6v15a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V19l4-6z" fill="url(#gCan)" stroke="#4A3220" stroke-width="2.5" stroke-linejoin="round"/><path d="M10 8h20v5H10z" fill="url(#gCap)" stroke="#4A3220" stroke-width="2.5"/></svg>
+    <div><span>Aaj ka kul doodh</span><b id="kul">${isNaN(kul)?"—":lt(kul)}</b><span id="kulrs">${r?`${rs((kul||0)*r)} · rate ₹${r}/L`:"Rate abhi nahi likha"}</span></div></div>
+  <div class="row2">
+    <div class="field"><label for="paid">Paisa mila (₹)</label><input id="paid" inputmode="numeric" placeholder="0" value="${esc(f.p)}"></div>
+    <div class="field"><label>&nbsp;</label><button class="toggle" id="noSupply" aria-pressed="${f.no}">${f.no?"✔ Supply nahi hui":"Aaj supply nahi"}</button></div>
+  </div>
+  <div class="savebar"><div class="in"><p class="err" id="err" role="alert"></p><button class="save ${f.dirty||!saved?"":"clean"}" id="save" ${!S.db||!S.canWrite?"disabled":""}>${f.dirty||!saved?"SAVE KARO":`✔ Pehle se save hai<span class="savetime">${savedTxt(S.entries[S.date])}</span>`}</button></div></div>
+  ${saved&&S.db&&S.canWrite?(S.confirmDel?`<div class="banner warn del">Pakka hatana hai?<span style="display:flex;gap:8px"><button class="chunk red" id="delYes">Haan, hatao</button><button class="chunk" id="delNo">Nahi</button></span></div>`:`<div class="del"><button class="link" id="del">Is din ki entry hatao</button></div>`):""}
+  ${miss.length?missBanner(miss.length):""}`;
+  wireEntry();
+}
+function savedTxt(e){if(!e||!e.at)return "Badalna ho to upar likho, phir SAVE";const d=new Date(e.at);let h=d.getHours(),m=String(d.getMinutes()).padStart(2,"0");const ap=h<12?"subah":h<17?"din":h<20?"shaam":"raat";h=h%12||12;const same=iso(d)===today();return `${same?"Aaj":fmtS(iso(d))} ${h}:${m} baje (${ap}) save kiya · badalna ho to likho`}
+function missBanner(n){return `<div class="banner warn"><span>${n} din ki entry khali hai</span><span class="btns"><button class="chunk green" id="bulk">Sab ek saath</button><button class="chunk red" id="goMiss">Ek-ek bharo</button></span></div>`}
+function milkCard(k,label,cls,icon){
+  const f=S.form,off=f.no?"off":"",v=valLG(k);
+  return `<div class="card milk ${cls}"><div class="ribbon">${icon}<h2>${label}</h2></div><span class="sum" id="sum-${k}">${v&&!isNaN(v)?lt(v):"0 L"}</span>
+  <div class="stepper ${off}"><button class="step minus" data-step="${k}" data-u="L" data-d="-1" aria-label="${label} 1 litre kam">−</button>
+   <div class="numwrap"><input id="in-${k}L" inputmode="numeric" placeholder="0" value="${f[k+"L"]}" aria-label="${label} litre"><em>Litre</em></div>
+   <button class="step" data-step="${k}" data-u="L" data-d="1" aria-label="${label} 1 litre zyada">+</button></div>
+  <div class="stepper gram ${off}"><button class="step minus" data-step="${k}" data-u="G" data-d="-50" aria-label="${label} 50 gram kam">−</button>
+   <div class="numwrap"><input id="in-${k}G" inputmode="numeric" placeholder="0" value="${f[k+"G"]}" aria-label="${label} gram"><em>Gram</em></div>
+   <button class="step" data-step="${k}" data-u="G" data-d="50" aria-label="${label} 50 gram zyada">+</button></div>
+  <div class="chips ${off}">${[0,250,500,750].map(g=>`<button class="chip2" data-gk="${k}" data-g="${g}" aria-pressed="${(num(f[k+"G"])||0)===g&&(g>0||f[k+"L"]!=="")}">${g} g</button>`).join("")}</div></div>`;
+}
+function sunIcon(){return `<svg width="38" height="38" viewBox="0 0 42 42" aria-hidden="true"><g stroke="#FFE38A" stroke-width="3" stroke-linecap="round"><path d="M21 2v6M6 8l4 4M36 8l-4 4M1 21h6M35 21h6"/></g><circle cx="21" cy="22" r="11" fill="url(#gSun)" stroke="#4A3220" stroke-width="2.5"/><circle cx="17" cy="18" r="3.5" fill="#fff" opacity=".6"/><path d="M16 25 q5 4 10 0" fill="none" stroke="#4A3220" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="21" r="1.4" fill="#4A3220"/><circle cx="25" cy="21" r="1.4" fill="#4A3220"/></svg>`}
+function moonIcon(){return `<svg width="38" height="38" viewBox="0 0 42 42" aria-hidden="true"><path d="M27 5a15 15 0 1 0 10 23A12.5 12.5 0 0 1 27 5z" fill="url(#gMoon)" stroke="#4A3220" stroke-width="2.5" stroke-linejoin="round"/><path d="M13 22 q2 2 4 0" fill="none" stroke="#4A3220" stroke-width="2" stroke-linecap="round"/><ellipse cx="12" cy="27" rx="2.5" ry="1.5" fill="#FF9FB0" opacity=".7"/><path d="M35 6 l1.2 2.6 2.8.4-2 2 .5 2.8-2.5-1.3-2.5 1.3.5-2.8-2-2 2.8-.4z" fill="#FFE38A" stroke="#4A3220" stroke-width="1"/></svg>`}
+
+function wireEntry(){
+  const on=(id,fn)=>{const el=$(id);if(el)el.onclick=fn};
+  on("#prev",()=>guard(()=>{S.date=addDays(S.date,-1);S.form=null;S.confirmDel=false;render()}));
+  on("#next",()=>guard(()=>{S.date=addDays(S.date,1);S.form=null;S.confirmDel=false;render()}));
+  on("#goToday",()=>guard(()=>{S.date=today();S.form=null;render()}));
+  on("#goMiss",()=>guard(()=>{S.date=missingDays()[0];S.form=null;render();window.scrollTo(0,0)}));
+  on("#bulk",()=>guard(openBulk));
+  on("#toH",()=>{S.month=today().slice(0,7);setTab("hisaab")});
+  document.querySelectorAll("[data-gk]").forEach(b=>b.onclick=()=>{const k=b.dataset.gk,g=Number(b.dataset.g);S.form[k+"G"]=g?String(g):"";if(S.form[k+"L"]==="")S.form[k+"L"]="0";$("#in-"+k+"G").value=S.form[k+"G"];$("#in-"+k+"L").value=S.form[k+"L"];b.parentNode.querySelectorAll(".chip2").forEach(c=>c.setAttribute("aria-pressed",c===b));mark()});
+  function mark(){S.form.dirty=true;const b=$("#save");b.classList.remove("clean");b.textContent="SAVE KARO";upd()}
+  ["sL","sG","eL","eG"].forEach(k=>$("#in-"+k).addEventListener("input",ev=>{const c=ev.target.value.replace(/[^0-9]/g,"");S.form[k]=c;if(ev.target.value!==c)ev.target.value=c;mark()}));
+  $("#paid").addEventListener("input",ev=>{S.form.p=ev.target.value;mark()});
+  document.querySelectorAll("[data-step]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.step,u=b.dataset.u,d=Number(b.dataset.d);
+    let L=num(S.form[k+"L"])||0,G=num(S.form[k+"G"])||0;if(isNaN(L))L=0;if(isNaN(G))G=0;
+    if(u==="L")L=Math.max(0,L+d);else{G+=d;if(G>=1000){L++;G-=1000}else if(G<0){if(L>0){L--;G+=1000}else G=0}}
+    S.form[k+"L"]=String(L);S.form[k+"G"]=G?String(G):"";$("#in-"+k+"L").value=S.form[k+"L"];$("#in-"+k+"G").value=S.form[k+"G"];mark();
+  });
+  on("#kal",()=>{const e=S.entries[$("#kal").dataset.k];setLG("s",e.s||null);setLG("e",e.e||null);S.form.dirty=true;renderEntry();toast("Bhar diya! Ab SAVE dabao")});
+  on("#noSupply",()=>{S.form.no=!S.form.no;if(S.form.no){setLG("s",null);setLG("e",null)}S.form.dirty=true;renderEntry()});
+  on("#save",saveEntry);
+  on("#del",()=>{S.confirmDel=true;renderEntry()});
+  on("#delNo",()=>{S.confirmDel=false;renderEntry()});
+  on("#delYes",delEntry);
+}
+function upd(){
+  const k=formLitres(),r=rateFor(S.date);
+  $("#kul").textContent=isNaN(k)?"—":lt(k);
+  $("#kulrs").textContent=r?`${rs((k||0)*r)} · rate ₹${r}/L`:"Rate abhi nahi likha";
+  ["s","e"].forEach(x=>{const v=valLG(x);$("#sum-"+x).textContent=v&&!isNaN(v)?lt(v):"0 L"});
+}
+async function saveEntry(){
+  const f=S.form,err=$("#err")||{textContent:""};err.textContent="";
+  if(!f)return true;
+  if(!f.dirty&&S.entries[S.date]){toast("Pehle se save hai ✔");return true}
+  if(["sG","eG"].some(k=>!f.no&&f[k]!==""&&num(f[k])>999)){err.textContent="Gram 0 se 999 ke beech likho. Jaise 350";return false}
+  const s=f.no?0:valLG("s"),e=f.no?0:valLG("e"),p=num(f.p);
+  if([s,e].some(x=>x!==null&&(isNaN(x)||x<0||x>100))){err.textContent="Litre 0 se 100 ke beech likho";return false}
+  if(p!==null&&(isNaN(p)||p<0||p>500000)){err.textContent="Paisa sirf number me likho. Jaise 5000";return false}
+  if(!f.no&&s===null&&e===null&&p===null){err.textContent="Subah ya shaam ka doodh likho";return false}
+  const r3=x=>Math.round((x||0)*1000)/1000;
+  const body={s:r3(s),e:r3(e),p:p||0,no:f.no,at:Date.now()};
+  const b=$("#save")||{disabled:false};if(b.disabled)return false;b.disabled=true;b.textContent="Save ho raha hai…";
+  try{await writeDoc("entries/"+S.date,body);S.entries[S.date]=body;S.form.dirty=false;toast("✔ Save ho gaya");render();return true}
+  catch(x){b.disabled=false;b.textContent="SAVE KARO";err.textContent=errText(x);return false}
+}
+async function delEntry(){
+  try{await S.db.doc("entries/"+S.date).delete();delete S.entries[S.date];S.form=null;S.confirmDel=false;toast("Entry hata di");render()}
+  catch(x){S.confirmDel=false;renderEntry();$("#err").textContent=errText(x)}
+}
+const QKEY="rajdairy_queue_v1";let QFLAG=false;
+function qLoad(){try{return JSON.parse(localStorage.getItem(QKEY)||"{}")||{}}catch(_){return {}}}
+function qSave(){try{localStorage.setItem(QKEY,JSON.stringify(QUEUE))}catch(_){}}
+let QUEUE=qLoad();
+const qCount=()=>Object.keys(QUEUE).length;
+function rawWrite(path,body){return Promise.race([S.db.doc(path).set(body),new Promise((_,no)=>setTimeout(()=>no({code:"timeout",message:"slow"}),15000))])}
+async function writeDoc(path,body){
+  try{await rawWrite(path,body)}
+  catch(x){
+    if(!(x&&(x.code==="unavailable"||x.code==="timeout")))throw x;
+    try{await new Promise(r=>setTimeout(r,800+Math.random()*700));await rawWrite(path,body)}
+    catch(y){if(!(y&&(y.code==="unavailable"||y.code==="timeout")))throw y;QUEUE[path]=body;qSave();QFLAG=true;return "queued"}
+  }
+  if(QUEUE[path]){delete QUEUE[path];qSave()}
+  return "saved";
+}
+let qBusy=false;
+async function qFlush(manual){
+  if(qBusy||!S.db||!qCount())return;qBusy=true;let n=0,fail=0;
+  for(const[path,body]of Object.entries(Object.assign({},QUEUE))){
+    try{await rawWrite(path,body);delete QUEUE[path];n++}catch(_){fail++}
+  }
+  qSave();qBusy=false;
+  if(n)toast(`Net aa gaya — ${n} cheez bhej di ✔`);else if(manual&&fail)toast("Abhi bhi net nahi hai");
+  render();
+}
+function qOverlay(prefix,map){for(const[path,body]of Object.entries(QUEUE)){if(path.startsWith(prefix+"/"))map[path.slice(prefix.length+1)]=body}return map}
+window.addEventListener("online",()=>qFlush());
+setInterval(()=>qFlush(),20000);
+function errText(x){
+  const c=x&&x.code;if(c==="timeout")return "Net bahut dheema hai. Thodi der me phir dabao.";
+  if(c==="invalid_argument"){S.canWrite=false;return "Aapko entry karne ki permission nahi hai."}
+  if(c==="unavailable")return "Internet nahi chal raha. Thodi der me phir dabao.";
+  if(c==="too_large")return "Phone me jagah kam hai. Kuch photo/video hatao, phir dabao.";
+  return "Save nahi hua. Phir se dabao.";
+}
+
+/* hisaab */
+function billText(c,ym){
+  const[y,m]=ym.split("-").map(Number);const lines=[];
+  let d=c.first;while(d<=c.last){const e=S.entries[d];if(e&&d>=START){const dd=parse(d).getDate();lines.push(e.no?`${dd}: supply nahi`:`${dd}: ${lt(litres(e))}${e.p?"  (paisa "+rs(e.p)+")":""}`)}d=addDays(d,1)}
+  const rates=[...new Set(Object.keys(S.entries).filter(k=>k>=c.first&&k<=c.last).map(rateFor))];
+  return `*Raj Dairy — Doodh ka Bill*\n${shop()}\n${MON[m-1]} ${y}\n\n${lines.join("\n")||"Koi entry nahi"}\n\nKul doodh: ${lt(c.kul)}\nRate: ${rates.length?rates.map(r=>"₹"+r+"/L").join(", "):"₹"+curRate()+"/L"}\nIs mahine ki rakam: ${rs(c.amt)}\nPichhla baaki: ${rs(c.prev)}\nPaisa mila: ${rs(c.paid)}\n*Baaki: ${rs(c.baaki)}*\n\nDhanyavaad 🙏`;
+}
+function renderHisaab(){
+  const c=monthCalc(S.month),[y,m]=S.month.split("-").map(Number),t=today();
+  const startYm=START.slice(0,7),curYm=t.slice(0,7);
+  let cells=WD.map(w=>`<span class="wd">${w}</span>`).join("");
+  const firstDow=parse(c.first).getDay();for(let i=0;i<firstDow;i++)cells+=`<span class="day blank"></span>`;
+  let d=c.first,list="";
+  while(d<=c.last){
+    const e=S.entries[d],dd=parse(d).getDate();let cls="",sub="";
+    if(d<START||d>t)cls="future";
+    else if(e&&e.no){cls="no";sub="nahi"}
+    else if(e){cls="done";sub=ltS(litres(e))}
+    else if(d<t){cls="miss";sub="Bharo"}
+    if(d===t)cls+=" today";
+    const tap=d>=START&&d<=t;
+    cells+=tap?`<button class="day ${cls}" data-day="${d}" aria-label="${dd} tareekh"><b>${dd}</b><small>${sub}</small></button>`:`<span class="day ${cls}"><b>${dd}</b></span>`;
+    if(e&&d>=START)list+=`<div><span>${dd} ${DAY[parse(d).getDay()]}</span><span>${e.no?"Supply nahi":lt(litres(e))}${e.p?" · "+rs(e.p):""}</span></div>`;
+    d=addDays(d,1);
+  }
+  app.innerHTML=banners()+`
+  <div class="datebar">
+    <button class="nav" id="mprev" aria-label="Pichhla mahina" ${S.month<=startYm?"disabled":""}>‹</button>
+    <div class="board"><b>${MON[m-1]}</b><span>${y}</span></div>
+    <button class="nav" id="mnext" aria-label="Agla mahina" ${S.month>=curYm?"disabled":""}>›</button>
+  </div>
+  <div class="slate"><span class="chalk"></span><p>Pandey Ji se lena hai</p><b>${rs(c.baaki)}</b><p class="small" style="color:inherit;opacity:.8">${MON[m-1]} ke end tak</p></div>
+  <div class="stats">
+    <div class="card stat"><span>Kul doodh</span><b>${lt(c.kul)}</b></div>
+    <div class="card stat"><span>Rakam</span><b>${rs(c.amt)}</b></div>
+    <div class="card stat"><span>Paisa mila</span><b>${rs(c.paid)}</b></div>
+  </div>
+  ${S.month===t.slice(0,7)&&missingDays().length?missBanner(missingDays().length):""}
+  <div class="card"><div class="cal">${cells}</div>
+   <div class="legend" style="margin-top:10px"><span><i style="background:var(--ok-soft)"></i>Bhara</span><span><i style="background:var(--bad)"></i>Bharna baaki</span><span><i style="background:var(--off-soft)"></i>Supply nahi</span></div>
+   <p class="small" style="margin:6px 0 0">Kisi bhi din pe tap karo, entry khul jayegi.</p></div>
+  <div class="card lines small">
+    <div><span>Pichhla baaki</span><span>${rs(c.prev)}</span></div>
+    <div><span>+ Is mahine ki rakam</span><span>${rs(c.amt)}</span></div>
+    <div><span>− Paisa mila</span><span>${rs(c.paid)}</span></div>
+    <div class="sumline" style="color:var(--ink)"><span>= Baaki</span><span>${rs(c.baaki)}</span></div>
+    <div><span>Subah ${lt(c.sub)} · Shaam ${lt(c.sha)}</span><span>${c.days} din supply</span></div>
+  </div>
+  <button class="save green" id="bill">WhatsApp Bill copy karo</button>
+  ${S.dl?`<button class="toggle" id="xls">Excel me lo (is mahine ka)</button>`:""}
+  ${S.showBill?`<div class="card"><p class="small" style="margin:0 0 6px">Neeche ka text daba ke rakho → Copy → WhatsApp me paste karo.</p><textarea class="billtxt" id="billtxt" readonly>${esc(billText(c,S.month))}</textarea></div>`:""}
+  ${list?`<button class="toggle" id="tlist">${S.showList?"Din ki list band karo":"Din ki list dekho"}</button>${S.showList?`<div class="card lines">${list}</div>`:""}`:""}`;
+  $("#mprev").onclick=()=>{const d=new Date(y,m-2,1);S.month=d.getFullYear()+"-"+pad(d.getMonth()+1);S.showBill=false;render()};
+  $("#mnext").onclick=()=>{const d=new Date(y,m,1);S.month=d.getFullYear()+"-"+pad(d.getMonth()+1);S.showBill=false;render()};
+  document.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>guard(()=>{S.date=b.dataset.day;S.form=null;setTab("entry")}));
+  const bb=$("#bulk");if(bb)bb.onclick=()=>guard(openBulk);
+  const gm=$("#goMiss");if(gm)gm.onclick=()=>guard(()=>{S.date=missingDays()[0];S.form=null;setTab("entry")});
+  const tl=$("#tlist");if(tl)tl.onclick=()=>{S.showList=!S.showList;render()};
+  const xb=$("#xls");if(xb)xb.onclick=async()=>{
+    const q=v=>{const s2=String(v);return /[",\n]/.test(s2)?'"'+s2.replace(/"/g,'""')+'"':s2};
+    const rows=[["Raj Dairy — "+shop()+" — "+MON[m-1]+" "+y],[],["Tareekh","Subah (L)","Shaam (L)","Kul (L)","Rate (Rs/L)","Rakam (Rs)","Paisa mila (Rs)","Note"]];
+    let d2=c.first;while(d2<=c.last){const e=S.entries[d2];if(e&&d2>=START){const L=litres(e),r=rateFor(d2);rows.push([fmtS(d2),e.no?0:e.s,e.no?0:e.e,L,r,Math.round(L*r),e.p||0,e.no?"Supply nahi":""])}d2=addDays(d2,1)}
+    rows.push([],["Kul doodh (L)",Math.round(c.kul*1000)/1000],["Is mahine ki rakam",Math.round(c.amt)],["Pichhla baaki",Math.round(c.prev)],["Paisa mila",Math.round(c.paid)],["Baaki",Math.round(c.baaki)]);
+    const ex2=expensesIn(c.first,c.last);if(ex2.list.length){rows.push([],["Kharcha"],["Tareekh","Type","Kis gaay","Note","Rs"]);ex2.list.slice().reverse().forEach(x=>rows.push([fmtS(x.date),TYPES[x.type]||"Loan kisht",x.type==="farm"||x.type==="loan"?"":cowName(x.cow||"all"),x.note||"",x.amt]))}
+    const csv="\uFEFF"+rows.map(r=>r.map(q).join(",")).join("\r\n");
+    try{await S.dl.save({filename:`RajDairy_${MON[m-1]}_${y}.csv`,data:csv});toast("✔ Excel file save ho gayi")}
+    catch(x){toast(x&&x.code==="declined"?"Save nahi kiya":"File save nahi hui")}
+  };
+  $("#bill").onclick=()=>{
+    const txt=billText(c,S.month);
+    const fallback=()=>{S.showBill=true;render();const ta=$("#billtxt");if(ta){ta.focus();ta.select()}toast("Text select hai, Copy dabao")};
+    try{navigator.clipboard.writeText(txt).then(()=>toast("✔ Bill copy ho gaya! WhatsApp me paste karo"),fallback)}catch(_){fallback()}
+  };
+}
+
+/* setting */
+function renderSetting(){
+  const st=S.settings||{},rates=(st.rates||[]).slice().sort((a,b)=>a.from<b.from?1:-1);
+  const dis=!S.db||!S.canWrite?"disabled":"";
+  app.innerHTML=banners()+backupCard()+`
+  <div class="card set">
+    <h2>Doodh ka rate</h2>
+    <p style="margin:0">Abhi ka rate: <b style="font-family:var(--display);font-size:1.4rem">${curRate()?"₹"+curRate()+" / litre":"nahi likha"}</b></p>
+    <div class="row2">
+      <div class="field"><label for="rate">Naya rate (₹/L)</label><input id="rate" inputmode="decimal" placeholder="60"></div>
+      <div class="field"><label for="rfrom">Kis din se</label><input id="rfrom" type="date" min="${START}" value="${rates.length?today():START}"></div>
+    </div>
+    <button class="save" style="min-height:56px;font-size:1.3rem" id="saveRate" ${dis}>Rate save karo</button>
+    <p class="err" id="rerr"></p>
+    ${rates.length?`<ul class="hist">${rates.map(r=>`<li><span>${fmtD(r.from)} se</span><b>₹${r.rate}/L</b></li>`).join("")}</ul>`:""}
+  </div>
+  <div class="card set">
+    <h2>Pichhla baaki</h2>
+    <p class="small" style="margin:0">1 October 2026 se pehle Pandey Ji pe kitna baaki tha? Nahi tha to 0.</p>
+    <div class="field"><input id="open" inputmode="numeric" value="${st.opening||""}" placeholder="0" aria-label="Pichhla baaki rupaye me"></div>
+    <button class="chunk green" style="min-height:52px" id="saveOpen" ${dis}>Save karo</button>
+    <p class="err" id="oerr"></p>
+  </div>
+  <div class="card set">
+    <h2>Dukan ka naam</h2>
+    <div class="field"><input id="shop" value="${esc(shop())}" aria-label="Dukan ka naam"></div>
+    <button class="chunk green" style="min-height:52px" id="saveShop" ${dis}>Save karo</button>
+  </div>
+  <div class="card help"><b style="font-family:var(--display);font-size:1.2rem">Kaise chalaye?</b><ol>
+    <li>Rate ek baar likho. Rate badle tabhi naya likho.</li>
+    <li>Roz Entry me subah-shaam ka doodh bharo. "Kal jaisa" se jaldi hoga.</li>
+    <li>Laal SAVE dabao.</li>
+    <li>Mahine ke end me Hisaab → "WhatsApp Bill" copy karke Pandey Ji ko bhejo.</li>
+    <li>Gaay tab: gaay jodo, kundli (siman, garbh, byaai) aur tika likho.</li>
+    <li>Kharcha tab: chara, dawai, farm ka kharcha likho.</li>
+    <li>Hisaab → Munafa: is mahine aur poore saal ka munafa dekho.</li>
+    <li>Har hafte Setting me "Backup bhejo" dabao, taaki phone kho jaye to bhi hisaab bacha rahe.</li></ol></div>`;
+  wireBackup();
+  $("#saveRate").onclick=async()=>{
+    const r=num($("#rate").value),fr=$("#rfrom").value,e=$("#rerr");e.textContent="";
+    if(r===null||isNaN(r)||r<1||r>500){e.textContent="Rate 1 se 500 ke beech likho. Jaise 60";return}
+    if(!fr||fr<START){e.textContent="Tareekh 1 Oct 2026 ya baad ki chuno";return}
+    const list=(st.rates||[]).filter(x=>x.from!==fr).concat([{from:fr,rate:r}]);
+    await saveSettings({rates:list},e,"✔ Rate save ho gaya");
+  };
+  $("#saveOpen").onclick=async()=>{const v=num($("#open").value),e=$("#oerr");e.textContent="";
+    if(v!==null&&(isNaN(v)||v<0)){e.textContent="Sirf number likho. Jaise 2000";return}
+    await saveSettings({opening:v||0},e,"✔ Save ho gaya")};
+  $("#saveShop").onclick=async()=>{await saveSettings({shop:$("#shop").value.trim()||"Pandey Ji ki Dukan"},$("#oerr"),"✔ Save ho gaya")};
+}
+async function saveSettings(patch,errEl,msg){
+  const body=Object.assign({shop:"Pandey Ji ki Dukan",opening:0,rates:[]},S.settings||{},patch);
+  try{await writeDoc("settings/main",body);S.settings=body;toast(msg);render()}catch(x){errEl.textContent=errText(x)}
+}
+
+/* ================= FARM: gaay, kharcha, munafa ================= */
+const GEST=283;
+const gestOf=c=>c&&c.kind==="bhains"?310:283;
+const TYPES={chara:"Chara-daana",dawai:"Dawai / Doctor",farm:"Farm kharcha"};
+const NOTEHINT={chara:"jaise: bhusa 5 bori",dawai:"jaise: bukhar ka injection",farm:"jaise: bijli bill, mazdoor"};
+const EV={siman:"Siman dala",garbh:"Garbh pakka",byaai:"Byaai / doodh shuru",sookhi:"Doodh band (sookhi)"};
+const EVL=Object.assign({doodh:"Doodh de rahi thi (jab li)"},EV);
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function cowList(){return Object.entries(S.cows).map(([id,c])=>Object.assign({id},c)).sort((a,b)=>(a.buy||"")<(b.buy||"")?-1:(a.buy||"")>(b.buy||"")?1:(a.name||"").localeCompare(b.name||""))}
+const activeOn=(c,d)=>(!c.buy||c.buy<=d)&&(!c.end||c.end>d);
+const activeCows=d=>cowList().filter(c=>activeOn(c,d));
+const cowName=id=>id==="all"?"Sab gaay":(S.cows[id]?S.cows[id].name:"(hatai gayi gaay)");
+function ymAdd(ym,n){const[y,m]=ym.split("-").map(Number);const d=new Date(y,m-1+n,1);return d.getFullYear()+"-"+pad(d.getMonth()+1)}
+function monthEnd(ym){const[y,m]=ym.split("-").map(Number);return ym+"-"+pad(new Date(y,m,0).getDate())}
+const ymLabel=ym=>MON[Number(ym.slice(5))-1].slice(0,3)+" "+ym.slice(0,4);
+const dDiff=(a,b)=>Math.round((parse(b)-parse(a))/86400000);
+const fmtS=s=>{const d=parse(s);return d.getDate()+" "+MON[d.getMonth()].slice(0,3)+" "+d.getFullYear()};
+const PK={m:{n:1,t:"Is mahine"},y:{n:12,t:"Poore saal"}};
+function periodOf(kind,ym){
+  const n=PK[kind].n;let sm=ym;
+  if(n>1){const[y,m]=ym.split("-").map(Number);const fy=m>=4?y:y-1;const off=((m-4)%12+12)%12;sm=ymAdd(fy+"-04",Math.floor(off/n)*n)}
+  const months=[];for(let i=0;i<n;i++)months.push(ymAdd(sm,i));
+  const label=n===1?MON[Number(sm.slice(5))-1]+" "+sm.slice(0,4):ymLabel(months[0])+" – "+ymLabel(months[n-1]);
+  return{first:months[0]+"-01",last:monthEnd(months[n-1]),months,label};
+}
+function incomeIn(first,last){let L=0,amt=0;for(const[d,e]of Object.entries(S.entries)){if(d<START||d<first||d>last)continue;L+=litres(e);amt+=litres(e)*rateFor(d)}return{L,amt}}
+function expensesIn(first,last){
+  const r={chara:0,dawai:0,farm:0,total:0,perCow:{},unassigned:0,list:[]};
+  for(const[id,x]of Object.entries(S.exp)){
+    if(!x||x.date<first||x.date>last)continue;const a=Number(x.amt)||0;
+    r[x.type]=(r[x.type]||0)+a;r.total+=a;r.list.push(Object.assign({id},x));
+    if(x.type==="farm")continue;
+    if(x.cow&&x.cow!=="all")r.perCow[x.cow]=(r.perCow[x.cow]||0)+a;
+    else{const ac=activeCows(x.date);if(!ac.length)r.unassigned+=a;else ac.forEach(c=>{r.perCow[c.id]=(r.perCow[c.id]||0)+a/ac.length})}
+  }
+  r.list.sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:(b.at||0)-(a.at||0));return r;
+}
+function prodIn(first,last){
+  const per={};let tot=0;
+  for(const[d,p]of Object.entries(S.prod)){if(d<first||d>last||!p||!p.cows)continue;
+    for(const[cid,v]of Object.entries(p.cows)){const l=(Number(v.s)||0)+(Number(v.e)||0);if(!per[cid])per[cid]={L:0,days:0};per[cid].L+=l;per[cid].days++;tot+=l}}
+  return{per,tot};
+}
+
+/* ---- kundli ---- */
+function cowEvents(c){return (c.events||[]).slice().sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0)}
+function kundli1(c){
+  const ev=cowEvents(c),t=today();
+  let milking=false,lastByaai=null;
+  for(const e of ev){if(e.d>t)continue;if(e.t==="byaai"){milking=true;lastByaai=e.d}if(e.t==="doodh")milking=true;if(e.t==="sookhi")milking=false}
+  // cycles: siman count until garbh
+  const cycles=[];let sim=[],cur=null;
+  for(const e of ev){
+    if(e.t==="siman")sim.push(e.d);
+    if(e.t==="garbh"){const succ=sim.length?sim[sim.length-1]:null;cur={tries:sim.length,succ,confirm:e.d,due:succ?addDays(succ,gestOf(c)):null,born:null};cycles.push(cur);sim=[]}
+    if(e.t==="byaai"){if(cur&&!cur.born&&e.d>=cur.confirm)cur.born=e.d;sim=[];cur=null}
+  }
+  const open=cycles.length&&!cycles[cycles.length-1].born?cycles[cycles.length-1]:null;
+  const pendingSiman=sim; // siman after last garbh/byaai, no garbh yet
+  // milking days in last 12 months (only owned days)
+  const winStart=addDays(t,-365),own=c.buy&&c.buy>winStart?c.buy:winStart,ownEnd=c.end&&c.end<t?c.end:t;
+  let state=null,mDays=0,cursor=own;
+  for(const e of ev){if(e.d<=own){if(e.t==="byaai"||e.t==="doodh")state=true;if(e.t==="sookhi")state=false}}
+  for(const e of ev){if(e.d<=own||e.d>ownEnd)continue;if(e.t!=="byaai"&&e.t!=="sookhi"&&e.t!=="doodh")continue;if(state)mDays+=dDiff(cursor,e.d);cursor=e.d;state=e.t!=="sookhi"}
+  if(state)mDays+=dDiff(cursor,ownEnd);
+  const ownDays=Math.max(0,dDiff(own,ownEnd));
+  const known=ev.some(e=>e.t==="byaai"||e.t==="sookhi"||e.t==="doodh");
+  return{milking,lastByaai,cycles,open,pendingSiman,mMonths:mDays/30.4,ownMonths:ownDays/30.4,known};
+}
+const m1=x=>(Math.round(x*2)/2).toLocaleString("en-IN");
+function cowStatus(c){
+  if(c.end)return{cls:"off",t:"Hata di"};
+  const k=kundli(c);
+  if(k.open&&k.open.due){const mo=Math.max(0,Math.floor(dDiff(k.open.succ,today())/30.4));return{cls:"preg",t:`Garbhvati · ${mo} mahine`}}
+  if(k.pendingSiman.length)return{cls:"sim",t:`Siman hua (${k.pendingSiman.length} baar)`};
+  if(k.milking)return{cls:"milk",t:"Doodh de rahi"};
+  if(k.known)return{cls:"dry",t:"Sookhi"};
+  return{cls:"off",t:"Kundli khali"};
+}
+function cowAlerts1(){
+  const t=today(),out=[];
+  for(const c of activeCows(t)){
+    const k=kundli(c);
+    if(k.open&&k.open.due){const left=dDiff(t,k.open.due);
+      if(left<=30&&left>=-15)out.push({c,cls:"warn",t:left>=0?`${c.name}: byaai ${left} din me (${fmtS(k.open.due)})`:`${c.name}: byaai ki tareekh nikal gayi — byaai hui to likho`});
+      else if(k.milking&&dDiff(t,addDays(k.open.due,-60))<=0)out.push({c,cls:"info",t:`${c.name}: doodh band (sookhi) karne ka time — byaai ${fmtS(k.open.due)}`});
+    }
+    if(k.pendingSiman.length){const last=k.pendingSiman[k.pendingSiman.length-1],g=dDiff(last,t);
+      if(g>=60)out.push({c,cls:"info",t:`${c.name}: siman ko ${g} din ho gaye — garbh check karao`})}
+  }
+  return out;
+}
+
+/* ---- production form ---- */
+function perCowOn(){return false}
+function prevProd(date){const ks=Object.keys(S.prod).filter(k=>k<date).sort();return ks.length?ks[ks.length-1]:null}
+function loadPform(){
+  const p=S.prod[S.pdate];S.pform={dirty:false,v:{}};
+  activeCows(S.pdate).forEach(c=>{const x=p&&p.cows&&p.cows[c.id];
+    if(x){const[a,b]=splitLG(x.s),[c2,d]=splitLG(x.e);S.pform.v[c.id]={sL:String(a),sG:b?String(b):"",eL:String(c2),eG:d?String(d):""}}
+    else S.pform.v[c.id]={sL:"",sG:"",eL:"",eG:""}});
+}
+const pv=(v,k)=>(num(v[k+"L"])||0)+(num(v[k+"G"])||0)/1000;
+function ptotal(){let s=0;for(const v of Object.values(S.pform.v))s+=pv(v,"s")+pv(v,"e");return s}
+async function saveProd(){
+  const err=$("#perr")||{textContent:""};err.textContent="";
+  if(!S.pform)return true;
+  const cows={};
+  for(const[cid,v]of Object.entries(S.pform.v)){
+    if(["sG","eG"].some(k=>num(v[k])>999)){err.textContent=`${cowName(cid)}: gram 0 se 999 ke beech likho`;return false}
+    const s=pv(v,"s"),e=pv(v,"e");if(s>60||e>60){err.textContent=`${cowName(cid)}: itna doodh sahi nahi lagta`;return false}
+    if(v.sL!==""||v.sG!==""||v.eL!==""||v.eG!=="")cows[cid]={s:Math.round(s*1000)/1000,e:Math.round(e*1000)/1000};
+  }
+  if(!Object.keys(cows).length){err.textContent="Kam se kam ek gaay ka doodh likho";return false}
+  const b=$("#psave");if(b){b.disabled=true;b.textContent="Save ho raha hai…"}
+  try{await writeDoc("prod/"+S.pdate,{cows,at:Date.now()});S.prod[S.pdate]={cows};S.pform.dirty=false;toast("✔ Gaay ka doodh save");render();return true}
+  catch(x){if(b){b.disabled=false;b.textContent="SAVE KARO"}err.textContent=errText(x);return false}
+}
+
+/* ---- render: Gaay ---- */
+function renderGaay(){
+  const t=today(),cows=cowList(),act=activeCows(t);
+  if(!S.pform)loadPform();
+  const pc=activeCows(S.pdate),mon=t.slice(0,7),ex=expensesIn(mon+"-01",monthEnd(mon)),pr=prodIn(mon+"-01",monthEnd(mon)).per;
+  const alerts=cowAlerts(),prv=prevProd(S.pdate),dd=parse(S.pdate),sup=S.entries[S.pdate],tot=ptotal();
+  let rows="";
+  for(const c of pc){const v=S.pform.v[c.id]||{sL:"",sG:"",eL:"",eG:""};
+    rows+=`<div class="prow"><b>${esc(c.name)}</b>
+     <div class="pgrp"><span>Subah</span><input data-pc="${c.id}" data-pk="sL" inputmode="numeric" placeholder="L" value="${v.sL}" aria-label="${esc(c.name)} subah litre"><input data-pc="${c.id}" data-pk="sG" inputmode="numeric" placeholder="g" value="${v.sG}" aria-label="${esc(c.name)} subah gram"></div>
+     <div class="pgrp"><span>Shaam</span><input data-pc="${c.id}" data-pk="eL" inputmode="numeric" placeholder="L" value="${v.eL}" aria-label="${esc(c.name)} shaam litre"><input data-pc="${c.id}" data-pk="eG" inputmode="numeric" placeholder="g" value="${v.eG}" aria-label="${esc(c.name)} shaam gram"></div></div>`}
+  let cards="";
+  for(const c of cows){const st=cowStatus(c),k=kundli(c),p=pr[c.id],x=ex.perCow[c.id]||0;
+    let next="";if(!c.end&&k.open&&k.open.due){const l=dDiff(t,k.open.due);next=`Byaai: ${fmtS(k.open.due)} (${l>=0?l+" din baaki":"nikal gayi"})`}
+    cards+=`<button class="card cowcard ${c.end?"gone":""}" data-cow="${c.id}">${cowAvatar(c,56)}<span class="cc"><b>${esc(c.name)}${c.kind==="bhains"?' <small class="small">(bhains)</small>':""}</b><span class="pill ${st.cls}">${st.t}</span>
+     <small>Is mahine ka kharcha ${rs(x)}</small>${next?`<small><b>${next}</b></small>`:""}</span><span class="go">›</span></button>`}
+  app.innerHTML=banners()+`
+  <div class="card countcard">${cowSvg(54)}<div><span class="small" style="font-weight:700">Kul gaay</span><b>${act.length}</b>${cows.length>act.length?`<span class="small">${cows.length-act.length} hatai gayi</span>`:""}</div><button class="chunk green" id="addCow">+ Nayi gaay</button></div>
+  ${alerts.map(a=>`<button class="banner ${a.cls}" data-cow="${a.c.id}" style="width:100%;text-align:left">${esc(a.t)} ›</button>`).join("")}
+  ${act.length?tikaCard():""}
+  ${!cows.length?`<div class="card help"><b style="font-family:var(--display);font-size:1.2rem">Abhi koi gaay nahi</b><ol><li>"+ Nayi gaay" dabao</li><li>Naam, kharid ki tareekh aur paisa likho</li><li>Gaay pe tap karke uski kundli bharo (siman, garbh, byaai)</li></ol></div>`:""}
+  ${pc.length&&perCowOn()?`<div class="card set"><h2>Har gaay ka doodh <button class="link" id="pcOff" style="font-size:.8rem">band karo</button></h2>
+    <div class="datebar"><button class="nav" id="pprev" aria-label="Pichhla din">‹</button><div class="board"><b>${dd.getDate()} ${MON[dd.getMonth()].slice(0,3)}</b><span>${DAY[dd.getDay()]}var</span>${S.pdate===t?'<span class="tag">Aaj</span>':""}</div><button class="nav" id="pnext" aria-label="Agla din" ${S.pdate>=t?"disabled":""}>›</button></div>
+    ${prv&&tot===0?`<button class="kal" id="pkal"><span><b>Pichhli baar jaisa bharo</b><small>${fmtS(prv)} wala, sab gaay ek tap me</small></span></button>`:""}
+    <div class="plist">${rows}</div>
+    <div class="lines small"><div><span>Gaay ka kul</span><b style="color:var(--ink)" id="ptot">${lt(tot)}</b></div><div><span>Pandey Ji ko diya</span><span>${sup?(sup.no?"Supply nahi":lt(litres(sup))):"abhi nahi likha"}</span></div>${sup&&!sup.no?`<div><span>Ghar / baaki</span><span id="pdiff">${tot>=litres(sup)?lt(tot-litres(sup)):"− "+lt(litres(sup)-tot)}</span></div>`:""}</div>
+    <p class="err" id="perr"></p>
+    <button class="save ${S.pform.dirty||!S.prod[S.pdate]?"":"clean"}" id="psave" style="min-height:58px;font-size:1.35rem" ${!S.db||!S.canWrite?"disabled":""}>${S.pform.dirty||!S.prod[S.pdate]?"SAVE KARO":"✔ Pehle se save hai"}</button></div>`:""}
+  ${cards?`<h2 class="sect">Meri gaay</h2>${cards}`:""}`;
+  const on=(id,fn)=>{const el=$(id);if(el)el.onclick=fn};
+  on("#addCow",()=>cowSheet(null));
+  on("#pcOn",()=>saveSettings({perCow:true},{},"Har gaay ka doodh chalu"));
+  on("#pcOff",()=>guard(()=>{S.pform=null;saveSettings({perCow:false},{},"Band kar diya")}));
+  on("#hAdd",()=>healthSheet("all","fmd"));
+  document.querySelectorAll("[data-cow]").forEach(b=>b.onclick=()=>cowSheet(b.dataset.cow));
+  on("#pprev",()=>guard(()=>{S.pdate=addDays(S.pdate,-1);S.pform=null;render()}));
+  on("#pnext",()=>guard(()=>{S.pdate=addDays(S.pdate,1);S.pform=null;render()}));
+  on("#pkal",()=>{const p=S.prod[prv];for(const c of pc){const x=p.cows&&p.cows[c.id];if(!x)continue;const[a,b]=splitLG(x.s),[c2,d]=splitLG(x.e);S.pform.v[c.id]={sL:String(a),sG:b?String(b):"",eL:String(c2),eG:d?String(d):""}}S.pform.dirty=true;render();toast("Bhar diya! Ab SAVE dabao")});
+  document.querySelectorAll("[data-pc]").forEach(i=>i.addEventListener("input",()=>{const c=i.value.replace(/[^0-9]/g,"");if(c!==i.value)i.value=c;S.pform.v[i.dataset.pc][i.dataset.pk]=c;S.pform.dirty=true;
+    const b=$("#psave");if(b){b.classList.remove("clean");b.textContent="SAVE KARO"}const tt=$("#ptot");if(tt)tt.textContent=lt(ptotal());
+    const pd=$("#pdiff");if(pd&&sup){const T=ptotal(),L=litres(sup);pd.textContent=T>=L?lt(T-L):"− "+lt(L-T)}}));
+  on("#psave",saveProd);
+}
+function cowSvg(sz){sz=sz||44;return `<svg width="${sz}" height="${sz}" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 12 q-6-6-2-10 q3 4 6 7z M38 12 q6-6 2-10 q-3 4-6 7z" fill="#FFF7E2" stroke="#4A3220" stroke-width="2"/><ellipse cx="7" cy="18" rx="6" ry="3.5" fill="#F4EFE8" stroke="#4A3220" stroke-width="2"/><ellipse cx="41" cy="18" rx="6" ry="3.5" fill="#F4EFE8" stroke="#4A3220" stroke-width="2"/><rect x="11" y="8" width="26" height="34" rx="13" fill="#fff" stroke="#4A3220" stroke-width="2.2"/><path d="M24 9 q8 1 11 9 q-8 1-11-9z" fill="#4A3220"/><circle cx="18" cy="22" r="2.6" fill="#3A2414"/><circle cx="30" cy="22" r="2.6" fill="#3A2414"/><circle cx="17.2" cy="21.2" r=".9" fill="#fff"/><circle cx="29.2" cy="21.2" r=".9" fill="#fff"/><ellipse cx="24" cy="34" rx="11" ry="7.5" fill="#FFC9D2" stroke="#4A3220" stroke-width="2"/><circle cx="20" cy="34" r="1.5" fill="#A8566A"/><circle cx="28" cy="34" r="1.5" fill="#A8566A"/></svg>`}
+
+/* ---- cow sheet: add / edit / kundli ---- */
+function cowSheet(id){
+  const c=id?S.cows[id]:null,t=today();
+  if(!c){
+    sheet(`<h3>Nayi gaay jodo</h3>
+     <div class="field"><label for="cName">Naam</label><input id="cName" placeholder="jaise: Gauri" maxlength="24"></div>
+     <div class="row2"><div class="field"><label for="cBuy">Kab li</label><input id="cBuy" type="date" value="${t}" max="${t}"></div>
+     <div class="field"><label for="cPrice">Kitne me li (₹)</label><input id="cPrice" inputmode="numeric" placeholder="60000"></div></div>
+     <div class="field"><label>Kaun sa jaanwar?</label><div class="seg s2"><button class="chip2" data-kd="gaay" aria-pressed="true">Gaay</button><button class="chip2" data-kd="bhains" aria-pressed="false">Bhains</button></div></div>
+     <div class="field"><label>Abhi kya haal hai?</label><div class="seg s2"><button class="chip2" data-st="byaai" aria-pressed="true">Doodh de rahi</button><button class="chip2" data-st="sookhi" aria-pressed="false">Sookhi hai</button></div></div>
+     <p class="small" style="margin:0">Ghar ki paali gaay hai to paisa 0 likho.</p>
+     <p class="err" id="cErr"></p>
+     <button class="save green bigbtn" id="cSave">Gaay jodo</button><button class="link" id="cNo">Ruko</button>`,el=>{
+      let st="byaai",kd="gaay";
+      el.querySelectorAll("[data-kd]").forEach(b=>b.onclick=()=>{kd=b.dataset.kd;el.querySelectorAll("[data-kd]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+      el.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{st=b.dataset.st;el.querySelectorAll("[data-st]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+      el.querySelector("#cPrice").addEventListener("input",ev=>{ev.target.value=ev.target.value.replace(/[^0-9]/g,"")});
+      el.querySelector("#cNo").onclick=closeSheet;
+      el.querySelector("#cSave").onclick=async()=>{
+        const name=el.querySelector("#cName").value.trim(),buy=el.querySelector("#cBuy").value,price=num(el.querySelector("#cPrice").value),er=el.querySelector("#cErr");
+        if(!name){er.textContent="Gaay ka naam likho";return}
+        if(!buy||buy>t){er.textContent="Sahi tareekh chuno";return}
+        if(price===null||isNaN(price)){er.textContent="Paisa likho (ghar ki gaay ho to 0)";return}
+        const nid=newId(),body={name,kind:kd,buy,price,end:null,events:[{t:st==="byaai"?"doodh":"sookhi",d:buy,id:newId()}],at:Date.now()};
+        try{await writeDoc("cows/"+nid,body);S.cows[nid]=body;S.pform=null;closeSheet();toast(`✔ ${name} jud gayi`);render()}catch(x){er.textContent=errText(x)}
+      };
+    });return;
+  }
+  const k=kundli(c),st=cowStatus(c),ev=cowEvents(c).slice().reverse();
+  const y1=today().slice(0,4);
+  const cyc=k.cycles.map((g,i)=>`<li><span>Garbh ${i+1}: ${g.succ?fmtS(g.succ):fmtS(g.confirm)}</span><b>${g.tries?g.tries+" baar siman":"siman nahi likha"}</b></li>`).join("");
+  sheet(`<div style="display:flex;align-items:center;gap:12px">${cowAvatar(c,72)}<div style="display:grid;gap:4px"><h3>${esc(c.name)}</h3><span class="pill ${st.cls}">${st.t}</span>${S.assets?`<label class="chunk" style="text-align:center;font-size:.85rem;cursor:pointer">${c.photo?"Photo badlo":"Photo lagao"}<input type="file" accept="image/*" id="cPhoto" hidden></label>`:""}</div></div>
+   <div class="kgrid">
+    <div class="stat card"><span>12 mahine me doodh diya</span><b>${k.known?m1(k.mMonths)+" mahine":"—"}</b></div>
+    <div class="stat card"><span>Sookhi rahi</span><b>${k.known?m1(Math.max(0,k.ownMonths-k.mMonths))+" mahine":"—"}</b></div>
+    <div class="stat card"><span>Kharid</span><b>${rs(c.price||0)}</b></div>
+    <div class="stat card"><span>Kab li</span><b>${c.buy?fmtS(c.buy):"—"}</b></div>
+   </div>
+   ${k.byGap||k.calfF||k.calfM?`<div class="kgrid"><div class="stat card"><span>Byaai ka antar (aam)</span><b>${k.byGap?m1(k.byGap)+" mahine":"—"}</b></div><div class="stat card"><span>Bachhiya · Bachhda</span><b>${k.calfF} · ${k.calfM}</b></div></div>`:""}
+   ${k.ownMonths<11.5&&k.known?`<p class="small" style="margin:0">Ye gaay ${m1(k.ownMonths)} mahine se aapke paas hai, isliye utne mahine ka hisaab.</p>`:""}
+   ${k.open&&k.open.due?`<div class="banner info" style="display:block"><b>Garbhvati</b> — ${k.open.tries} baar siman ke baad garbh thehra (${k.open.succ?fmtS(k.open.succ):""}).<br>Byaai lagbhag: <b>${fmtS(k.open.due)}</b> (${dDiff(today(),k.open.due)} din)<br>Sookhi karne ki salah: ${fmtS(addDays(k.open.due,-60))} se</div>`:""}
+   ${!k.open&&k.pendingSiman.length?`<div class="banner info" style="display:block">Siman ${k.pendingSiman.length} baar dala, garbh abhi pakka nahi. Aakhri: ${fmtS(k.pendingSiman[k.pendingSiman.length-1])}</div>`:""}
+   ${cyc?`<div><b>Garbh ka record</b><ul class="hist">${cyc}</ul></div>`:""}
+   <div><b>Naya kaam likho</b>
+    <div class="seg s2" style="margin-top:6px">${[["siman","Siman dala"],["garbh","Garbh pakka"],["byaai:f","Byaai: bachhiya"],["byaai:m","Byaai: bachhda"],["sookhi","Doodh band (sookhi)"],["byaai:","Doodh shuru (bina byaai)"]].map(([kk,v])=>`<button class="chip2" data-ev="${kk}">${v}</button>`).join("")}</div>
+    <div class="field" style="margin-top:8px"><label for="evD">Tareekh</label><input id="evD" type="date" value="${today()}" max="${today()}"></div>
+    <p class="small" style="margin:4px 0 0">Upar wala button dabao, us tareekh pe likh jayega.</p></div>
+   <div><b>Kundli (sab kaam)</b><ul class="hist">${ev.length?ev.map(e=>`<li><span>${fmtS(e.d)} · ${EVL[e.t]||e.t}${e.calf?(e.calf==="f"?" — bachhiya":" — bachhda"):""}</span><button class="link" data-del-ev="${e.id}">hatao</button></li>`).join(""):"<li><span class='small'>Abhi kuch nahi</span></li>"}</ul></div>
+   <div><b>Tika / dawai</b><ul class="hist">${healthList().filter(h=>h.cow===id||h.cow==="all").sort((a,b)=>a.date<b.date?1:-1).slice(0,8).map(h=>`<li><span>${fmtS(h.date)} · ${HK[h.kind]?HK[h.kind].t:h.kind}${h.cow==="all"?" (sab)":""}</span><span class="small">${h.next?"agla "+fmtS(h.next):""}</span></li>`).join("")||"<li><span class='small'>Abhi kuch nahi</span></li>"}</ul><button class="chunk green" id="kHealth" style="width:100%">+ Tika / dawai likho</button></div>
+   <p class="small" style="margin:0">Byaai ki tareekh lagbhag hai (siman + ${gestOf(c)} din). Doctor se pakka karo.</p>
+   <details><summary style="font-weight:800;cursor:pointer">Gaay ki jaankari badlo</summary>
+    <div class="set" style="margin-top:8px"><div class="field"><label for="eName">Naam</label><input id="eName" value="${esc(c.name)}" maxlength="24"></div>
+    <div class="row2"><div class="field"><label for="eBuy">Kab li</label><input id="eBuy" type="date" value="${c.buy||""}" max="${today()}"></div><div class="field"><label for="ePrice">Kitne me (₹)</label><input id="ePrice" inputmode="numeric" value="${c.price||0}"></div></div>
+    <div class="field"><label for="eKind">Jaanwar</label><select id="eKind"><option value="gaay" ${c.kind!=="bhains"?"selected":""}>Gaay</option><option value="bhains" ${c.kind==="bhains"?"selected":""}>Bhains</option></select></div>
+    <button class="chunk green" id="eSave">Badlav save karo</button>
+    ${c.end?`<button class="chunk" id="eBack">Gaay wapas jodo</button>`:`<button class="chunk red" id="eEnd">Gaay hatao (bech di / nahi rahi)</button>`}
+    <button class="link" id="eDel">Galti se judi thi — poori mita do</button></div></details>
+   <p class="err" id="kErr"></p>
+   <button class="toggle bigbtn" id="kClose">Band karo</button>`,el=>{
+    const er=el.querySelector("#kErr");
+    const ph=el.querySelector("#cPhoto");if(ph)ph.addEventListener("change",()=>{if(ph.files&&ph.files[0]){er.textContent="Photo lag rahi hai…";uploadPhoto(id,ph.files[0],er)}});
+    el.querySelector("#kHealth").onclick=()=>healthSheet(id,"fmd");
+    const save=async(patch,msg)=>{const body=Object.assign({},S.cows[id],patch);try{await writeDoc("cows/"+id,body);S.cows[id]=body;S.pform=null;toast(msg);render();cowSheet(id)}catch(x){er.textContent=errText(x)}};
+    el.querySelectorAll("[data-ev]").forEach(b=>b.onclick=()=>{const d=el.querySelector("#evD").value;if(!d||d>today()){er.textContent="Sahi tareekh chuno";return}
+      const[tt,cf]=b.dataset.ev.split(":");const ev2={t:tt,d,id:newId()};if(tt==="byaai"&&cf)ev2.calf=cf;if(tt==="byaai"&&cf==="")ev2.t="doodh";
+      save({events:(c.events||[]).concat([ev2])},`✔ ${b.textContent} likh diya`)});
+    el.querySelectorAll("[data-del-ev]").forEach(b=>b.onclick=()=>save({events:(c.events||[]).filter(e=>e.id!==b.dataset.delEv)},"Hata diya"));
+    el.querySelector("#kClose").onclick=closeSheet;
+    el.querySelector("#eSave").onclick=()=>{const n=el.querySelector("#eName").value.trim(),bd=el.querySelector("#eBuy").value,p=num(el.querySelector("#ePrice").value);
+      if(!n){er.textContent="Naam likho";return}if(p===null||isNaN(p)){er.textContent="Paisa sirf number";return}save({name:n,buy:bd||c.buy,price:p,kind:el.querySelector("#eKind").value},"✔ Save ho gaya")};
+    const eb=el.querySelector("#eEnd");if(eb)eb.onclick=()=>{if(eb.dataset.sure){save({end:today()},"Gaay hata di")}else{eb.dataset.sure=1;eb.textContent="Pakka? Phir se dabao"}};
+    const bk=el.querySelector("#eBack");if(bk)bk.onclick=()=>save({end:null},"Gaay wapas jud gayi");
+    const dl=el.querySelector("#eDel");dl.onclick=async()=>{if(!dl.dataset.sure){dl.dataset.sure=1;dl.textContent="Pakka mitana hai? Phir se dabao";return}
+      try{await S.db.doc("cows/"+id).delete();delete S.cows[id];S.pform=null;closeSheet();toast("Mita di");render()}catch(x){er.textContent=errText(x)}};
+  });
+}
+
+/* ---- render: Kharcha ---- */
+function renderKharcha(){
+  const t=today();if(!S.ef)S.ef={type:"chara",amt:"",date:t,cow:"all",note:""};if(!S.emonth)S.emonth=t.slice(0,7);
+  const f=S.ef,ex=expensesIn(S.emonth+"-01",monthEnd(S.emonth)),ac=activeCows(f.date||t);
+  const cowOpts=`<option value="all" ${f.cow==="all"?"selected":""}>Sab gaay (barabar baant do)</option>`+ac.map(c=>`<option value="${c.id}" ${f.cow===c.id?"selected":""}>${esc(c.name)}</option>`).join("");
+  app.innerHTML=banners()+`
+  <div class="card set"><h2>Naya kharcha likho</h2>
+   <div class="seg s3">${Object.entries(TYPES).map(([k,v])=>`<button class="chip2" data-et="${k}" aria-pressed="${f.type===k}">${v}</button>`).join("")}</div>
+   <div class="row2"><div class="field"><label for="eAmt">Kitna (₹)</label><input id="eAmt" inputmode="numeric" placeholder="500" value="${esc(f.amt)}"></div>
+   <div class="field"><label for="eDate">Kab</label><input id="eDate" type="date" value="${f.date}" min="${START}" max="${t}"></div></div>
+   ${f.type!=="farm"?`<div class="field"><label for="eCow">Kis gaay ka</label><select id="eCow">${cowOpts}</select></div>`:""}
+   <div class="field"><label for="eNote">Kya liya (chahe to)</label><input id="eNote" placeholder="${NOTEHINT[f.type]}" value="${esc(f.note)}" maxlength="60"></div>
+   <p class="err" id="xErr"></p>
+   <button class="save" id="xSave" style="min-height:58px;font-size:1.35rem" ${!S.db||!S.canWrite?"disabled":""}>KHARCHA SAVE KARO</button></div>
+  <div class="datebar"><button class="nav" id="emprev" ${S.emonth<=START.slice(0,7)?"disabled":""} aria-label="Pichhla mahina">‹</button><div class="board"><b>${MON[Number(S.emonth.slice(5))-1]}</b><span>${S.emonth.slice(0,4)}</span></div><button class="nav" id="emnext" ${S.emonth>=t.slice(0,7)?"disabled":""} aria-label="Agla mahina">›</button></div>
+  <div class="stats">
+   <div class="card stat"><span>Chara-daana</span><b>${rs(ex.chara)}</b></div>
+   <div class="card stat"><span>Dawai</span><b>${rs(ex.dawai)}</b></div>
+   <div class="card stat"><span>Farm</span><b>${rs(ex.farm)}</b></div></div>
+  <div class="card strip" style="cursor:default"><span>Is mahine ka kul kharcha</span><b>${rs(ex.total)}</b></div>
+  ${ex.list.length?`<div class="card"><ul class="hist xlist">${ex.list.map(x=>`<li><span><b>${TYPES[x.type]}</b> · ${fmtS(x.date)}<br><small class="small">${x.type!=="farm"?esc(cowName(x.cow||"all")):"Farm"}${x.note?" · "+esc(x.note):""}</small></span><span style="text-align:right"><b>${rs(x.amt)}</b><br><button class="link" data-xdel="${x.id}">hatao</button></span></li>`).join("")}</ul></div>`:`<div class="card"><p class="small" style="margin:0">Is mahine abhi koi kharcha nahi likha.</p></div>`}`;
+  document.querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>{S.ef.type=b.dataset.et;render()});
+  const keep=()=>{S.ef.amt=$("#eAmt").value;S.ef.date=$("#eDate").value;S.ef.note=$("#eNote").value;const ec=$("#eCow");if(ec)S.ef.cow=ec.value};
+  $("#eAmt").addEventListener("input",ev=>{ev.target.value=ev.target.value.replace(/[^0-9]/g,"");keep()});
+  ["#eNote","#eCow"].forEach(s=>{const el=$(s);if(el)el.addEventListener("input",keep)});
+  $("#eDate").addEventListener("change",()=>{keep();render()});
+  $("#emprev").onclick=()=>{S.emonth=ymAdd(S.emonth,-1);render()};$("#emnext").onclick=()=>{S.emonth=ymAdd(S.emonth,1);render()};
+  document.querySelectorAll("[data-xdel]").forEach(b=>b.onclick=async()=>{if(!b.dataset.sure){b.dataset.sure=1;b.textContent="pakka?";return}
+    try{await S.db.doc("expenses/"+b.dataset.xdel).delete();delete S.exp[b.dataset.xdel];toast("Kharcha hata diya");render()}catch(x){toast(errText(x))}});
+  $("#xSave").onclick=async()=>{keep();const er=$("#xErr");er.textContent="";const a=num(S.ef.amt);
+    if(a===null||isNaN(a)||a<=0){er.textContent="Kitna paisa laga, likho. Jaise 500";return}
+    if(a>1000000){er.textContent="Itna bada kharcha sahi nahi lagta";return}
+    if(!S.ef.date||S.ef.date<START||S.ef.date>t){er.textContent="Sahi tareekh chuno";return}
+    const nid=newId(),body={type:S.ef.type,amt:a,date:S.ef.date,cow:S.ef.type==="farm"?null:(S.ef.cow||"all"),note:S.ef.note.trim(),at:Date.now()};
+    const b=$("#xSave");b.disabled=true;b.textContent="Save ho raha hai…";
+    try{await writeDoc("expenses/"+nid,body);S.exp[nid]=body;S.ef={type:S.ef.type,amt:"",date:S.ef.date,cow:S.ef.cow,note:""};S.emonth=body.date.slice(0,7);toast("✔ Kharcha save");render()}
+    catch(x){b.disabled=false;b.textContent="KHARCHA SAVE KARO";er.textContent=errText(x)}};
+}
+
+/* ---- render: Munafa ---- */
+function renderMunafa(){
+  const t=today();if(!S.pk||!PK[S.pk])S.pk="m";if(!S.pym)S.pym=t.slice(0,7);
+  const P=periodOf(S.pk,S.pym),inc=incomeIn(P.first,P.last),ex=expensesIn(P.first,P.last),net=inc.amt-ex.total;
+  const prod=prodIn(P.first,P.last);
+  let bars="";
+  if(P.months.length>1){const rows=P.months.map(m=>{const a=incomeIn(m+"-01",monthEnd(m)).amt,b=expensesIn(m+"-01",monthEnd(m)).total;return{m,a,b}});
+    const mx=Math.max(1,...rows.map(r=>Math.max(r.a,r.b)));
+    bars=`<div class="card"><b>Mahine-wise</b><div class="bars">${rows.map(r=>`<div class="barrow"><span>${MON[Number(r.m.slice(5))-1].slice(0,3)}</span><div><i class="bar in" style="width:${r.a/mx*100}%"></i><i class="bar out" style="width:${r.b/mx*100}%"></i></div><b class="${r.a-r.b>=0?"pos":"neg"}">${rs(r.a-r.b)}</b></div>`).join("")}</div>
+     <div class="legend" style="margin-top:8px"><span><i style="background:var(--grass)"></i>Aamdani</span><span><i style="background:var(--barn)"></i>Kharcha</span></div></div>`}
+  const cows=cowList().filter(c=>(!c.buy||c.buy<=P.last)&&(!c.end||c.end>P.first));
+  const tbl=cows.length?`<div class="card"><b>Gaay-wise (andaaz)</b><div class="tblwrap"><table class="tbl"><thead><tr><th>Gaay</th><th>Doodh</th><th>Kharcha</th><th>Munafa*</th></tr></thead><tbody>${cows.map(c=>{const p=prod.per[c.id],x=ex.perCow[c.id]||0,earn=p&&prod.tot?p.L/prod.tot*inc.amt:null;
+     return `<tr><td>${esc(c.name)}</td><td>${p?lt(p.L):"—"}</td><td>${rs(x)}</td><td class="${earn===null?"":earn-x>=0?"pos":"neg"}">${earn===null?"—":rs(earn-x)}</td></tr>`}).join("")}</tbody></table></div>
+     <p class="small" style="margin:6px 0 0">*Gaay ki kamai = uske doodh ka hissa × kul bikri. Gaay-wise doodh jitne din bharoge, utna sahi.${ex.unassigned?` ${rs(ex.unassigned)} chara kisi gaay me nahi baanta (us din koi gaay nahi thi).`:""}</p></div>`:"";
+  const allInc=incomeIn(START,t).amt,allEx=expensesIn(START,t).total,allNet=allInc-allEx;
+  const buy=cowList().reduce((s,c)=>s+(Number(c.price)||0),0);
+  const monthsRun=Math.max(1,dDiff(START,t)/30.4),avg=allNet/monthsRun,pct=buy?Math.max(0,Math.min(100,allNet/buy*100)):0;
+  const left=buy-allNet,est=avg>0&&left>0?Math.ceil(left/avg):null;
+  const perL=inc.L?ex.total/inc.L:null,rate=inc.L?inc.amt/inc.L:null;
+  app.innerHTML=banners()+`
+  <div class="seg s2">${Object.entries(PK).map(([k,v])=>`<button class="chip2" data-pk2="${k}" aria-pressed="${S.pk===k}">${v.t}</button>`).join("")}</div>
+  <div class="datebar"><button class="nav" id="mprev2" aria-label="Pichhla">‹</button><div class="board"><b style="font-size:${P.months.length>1?"1.1rem":"1.5rem"}">${P.label}</b>${P.months.length>3?'<span>Saal Apr se Mar</span>':""}</div><button class="nav" id="mnext2" ${P.last>=t?"disabled":""} aria-label="Agla">›</button></div>
+  <div class="slate result"><span class="chalk"></span><p>${net>=0?"Munafa":"Nuksaan"}</p><b style="color:${net>=0?"#B9F5A6":"#FFB3A8"}">${rs(Math.abs(net))}</b><p class="small" style="color:inherit;opacity:.85">${P.label}</p></div>
+  <div class="card lines">
+    <div><span>Doodh bika (${lt(inc.L)})</span><b class="pos">+ ${rs(inc.amt)}</b></div>
+    <div><span>Chara-daana</span><span class="neg">− ${rs(ex.chara)}</span></div>
+    <div><span>Dawai / Doctor</span><span class="neg">− ${rs(ex.dawai)}</span></div>
+    <div><span>Farm kharcha</span><span class="neg">− ${rs(ex.farm)}</span></div>
+    <div class="sumline"><span>= ${net>=0?"Munafa":"Nuksaan"}</span><b class="${net>=0?"pos":"neg"}">${rs(net)}</b></div>
+    ${ex.loan?`<div class="small"><span>Loan kisht bhari (munafa me nahi gini)</span><span>${rs(ex.loan)}</span></div>`:""}
+    ${perL!==null?`<div class="small"><span>1 litre ki laagat ${rs(perL)} · bikta ${rs(rate)}</span><span>${rate-perL>=0?"bachat":"ghata"} ${rs(Math.abs(rate-perL))}/L</span></div>`:""}
+  </div>
+  ${bars}
+  <div class="card set"><h2>Poonji (gaay kharid)</h2>
+    <div class="lines small"><div><span>Gaay kharid me laga</span><b style="color:var(--ink)">${rs(buy)}</b></div><div><span>Ab tak ka kul munafa (1 Oct se)</span><b class="${allNet>=0?"pos":"neg"}">${rs(allNet)}</b></div></div>
+    ${buy?`<div class="prog" aria-label="Wapas aaya ${Math.round(pct)} pratishat"><i style="width:${pct}%"></i></div>
+    <p style="margin:0;font-weight:700">${Math.round(pct)}% paisa wapas aaya. ${left<=0?"Gaay ka poora paisa nikal aaya!":`Abhi ${rs(left)} aur nikalna baaki.`}</p>`:`<p class="small" style="margin:0">Gaay tab me gaay jodo, uska kharid paisa yahan dikhega.</p>`}
+    <p class="small" style="margin:0">Gaay ka kharid paisa mahine ke munafe me nahi joda — warna jis mahine gaay aayi, wo mahina bada nuksaan dikhata.</p></div>`;
+  document.querySelectorAll("[data-pk2]").forEach(b=>b.onclick=()=>{S.pk=b.dataset.pk2;render()});
+  $("#mprev2").onclick=()=>{S.pym=ymAdd(P.months[0],-1);render()};
+  $("#mnext2").onclick=()=>{S.pym=ymAdd(P.months[P.months.length-1],1);render()};
+}
+
+/* ================= FARM v2: aaj, tika, stock, fix kharcha ================= */
+const HK={fmd:{t:"Khurpaka-muhpaka tika",gap:182},hs:{t:"Galghotu tika",gap:365},lsd:{t:"Lumpy tika",gap:365},worm:{t:"Pet ke keede ki dawa",gap:91},bima:{t:"Pashu bima renew",gap:365},other:{t:"Doosra ilaaj / dawai",gap:0}};
+const STOCKNAMES=[["Bhusa","quintal"],["Daana / Cattle feed","bori"],["Khali","kg"],["Mineral mixture","kg"],["Hara chara","quintal"]];
+const FIXNAMES=["Pashu bima","Loan kisht","Mazdoor","Bijli bill"];
+const ICON={
+  chara:`<svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><path d="M10 14 h28 l4 26 a3 3 0 0 1-3 3 H9 a3 3 0 0 1-3-3z" fill="#E9C46A" stroke="#4A3220" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 14 q12-8 24 0" fill="#F4D58D" stroke="#4A3220" stroke-width="2.5"/><path d="M16 22 v14 M24 22 v16 M32 22 v14" stroke="#B5862A" stroke-width="2"/><path d="M18 8 l2 6 M24 6 v8 M30 8 l-2 6" stroke="#C9A227" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  dawai:`<svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><rect x="15" y="6" width="18" height="7" rx="2" fill="#4DB04A" stroke="#4A3220" stroke-width="2.5"/><path d="M13 13 h22 v26 a4 4 0 0 1-4 4 H17 a4 4 0 0 1-4-4z" fill="#EAF6FF" stroke="#4A3220" stroke-width="2.5"/><rect x="13" y="20" width="22" height="13" fill="#fff" stroke="#4A3220" stroke-width="2"/><path d="M24 22 v9 M19.5 26.5 h9" stroke="#E04A3B" stroke-width="3" stroke-linecap="round"/></svg>`,
+  farm:`<svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><path d="M6 22 L24 8 L42 22 V42 H6z" fill="#D2452F" stroke="#4A3220" stroke-width="2.5" stroke-linejoin="round"/><rect x="18" y="28" width="12" height="14" fill="#F4E7D3" stroke="#4A3220" stroke-width="2"/><path d="M33 13 l-4 9 h5 l-4 9" fill="none" stroke="#FFC94A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+};
+const healthList=()=>Object.entries(S.health).map(([id,h])=>Object.assign({id},h));
+const stockList=()=>Object.entries(S.stock).map(([id,s])=>Object.assign({id},s)).sort((a,b)=>(a.at||0)-(b.at||0));
+const fixedList=()=>Object.entries(S.fixed).map(([id,f])=>Object.assign({id},f)).sort((a,b)=>(a.at||0)-(b.at||0));
+function curQty(it){return Math.max(0,(Number(it.qty)||0)-(Number(it.perDay)||0)*Math.max(0,dDiff(it.asOf||today(),today())))}
+function daysLeft(it){const p=Number(it.perDay)||0;return p>0?Math.floor(curQty(it)/p):null}
+const q2=n=>(Math.round(n*10)/10).toLocaleString("en-IN");
+
+/* expenses incl. fix kharcha (override) */
+function expensesIn(first,last){
+  const r={chara:0,dawai:0,farm:0,total:0,loan:0,perCow:{},unassigned:0,list:[]};
+  const add=(x,id)=>{const a=Number(x.amt)||0;if(x.type==="loan"){r.loan+=a;r.list.push(Object.assign({id},x));return}r[x.type]=(r[x.type]||0)+a;r.total+=a;r.list.push(Object.assign({id},x));
+    if(x.type==="farm")return;
+    if(x.cow&&x.cow!=="all")r.perCow[x.cow]=(r.perCow[x.cow]||0)+a;
+    else{const ac=activeCows(x.date);if(!ac.length)r.unassigned+=a;else ac.forEach(c=>{r.perCow[c.id]=(r.perCow[c.id]||0)+a/ac.length})}};
+  for(const[id,x]of Object.entries(S.exp)){if(x&&x.date>=first&&x.date<=last)add(x,id)}
+  const t=today();
+  for(const f of fixedList()){
+    let ym=(f.from||START).slice(0,7);const endYm=last.slice(0,7);let guardN=0;
+    while(ym<=endYm&&guardN++<240){
+      const dim=Number(monthEnd(ym).slice(8));const d=ym+"-"+pad(Math.min(Math.max(1,Number(f.day)||1),dim));
+      if(d>=first&&d<=last&&d<=t&&d>=(f.from||START)&&(!f.to||d<=f.to))add({type:f.type||"farm",amt:f.amt,date:d,cow:(f.type||"farm")==="farm"?null:"all",note:f.name+" (fix)",fixed:true},"fx-"+f.id+"-"+ym);
+      ym=ymAdd(ym,1);
+    }
+  }
+  r.list.sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:(b.at||0)-(a.at||0));return r;
+}
+
+/* kundli (override) with calves + byaai gap */
+function kundli(c){
+  const k=kundli1(c),ev=cowEvents(c),by=ev.filter(e=>e.t==="byaai").map(e=>e.d);
+  const gaps=[];for(let i=1;i<by.length;i++)gaps.push(dDiff(by[i-1],by[i])/30.4);
+  k.byGap=gaps.length?gaps.reduce((a,b)=>a+b,0)/gaps.length:null;
+  k.calfF=ev.filter(e=>e.t==="byaai"&&e.calf==="f").length;k.calfM=ev.filter(e=>e.t==="byaai"&&e.calf==="m").length;
+  return k;
+}
+function prodDrop(c){
+  const ds=Object.keys(S.prod).filter(d=>S.prod[d]&&S.prod[d].cows&&S.prod[d].cows[c.id]).sort();
+  if(ds.length<6)return null;
+  const v=d=>{const x=S.prod[d].cows[c.id];return (Number(x.s)||0)+(Number(x.e)||0)};
+  const last=ds.slice(-3).map(v),prev=ds.slice(-10,-3).map(v);
+  const a=last.reduce((s,x)=>s+x,0)/last.length,b=prev.reduce((s,x)=>s+x,0)/prev.length;
+  return b>0&&a<b*0.8?Math.round((1-a/b)*100):null;
+}
+/* alerts (override) */
+function cowAlerts(){
+  const out=cowAlerts1();
+  for(const c of activeCows(today())){
+    const k=kundli(c);
+    if(k.pendingSiman.length>=3)out.push({c,cls:"warn",t:`${c.name}: ${k.pendingSiman.length} baar siman, garbh nahi — doctor ko dikhao`});
+  }
+  return out;
+}
+/* tika due */
+function healthDue(){
+  const t=today(),out=[],H=healthList();
+  for(const c of activeCows(t)){
+    for(const[k,v]of Object.entries(HK)){if(!v.gap)continue;
+      const recs=H.filter(h=>h.kind===k&&(h.cow===c.id||(h.cow==="all"&&(!c.at||!h.at||c.at<=h.at)))&&h.date<=t).sort((a,b)=>a.date<b.date?1:-1);
+      if(!recs.length)continue;const due=recs[0].next||addDays(recs[0].date,v.gap);
+      out.push({k,cow:c,due,last:recs[0].date});
+    }
+  }
+  const g={};for(const x of out){const key=x.k+"|"+x.due;(g[key]=g[key]||{k:x.k,due:x.due,cows:[]}).cows.push(x.cow)}
+  return Object.values(g).sort((a,b)=>a.due<b.due?-1:1);
+}
+const dueText=d=>{const n=dDiff(today(),d);return n<0?`${-n} din se baaki`:n===0?"aaj":`${n} din me (${fmtS(d)})`};
+
+
+/* ---- backup (phone only data) ---- */
+const BK="rdk_last_backup";
+const lastBackup=()=>{try{return localStorage.getItem(BK)||""}catch(_){return""}};
+function backupCard(){
+  const lb=lastBackup();const n=lb?dDiff(lb.slice(0,10),today()):null;
+  return `<div class="card set" id="bkCard">
+    <h2>Backup (zaroori)</h2>
+    <p class="small" style="margin:0">Saara hisaab sirf is phone me hai. Phone kho gaya ya kharab hua to backup se wapas aa jayega.</p>
+    <p style="margin:0">Aakhri backup: <b>${lb?(n===0?"aaj":n+" din pehle")+" ("+fmtS(lb.slice(0,10))+")":"kabhi nahi"}</b></p>
+    <button class="save green" style="min-height:56px;font-size:1.2rem" id="bkSend">Backup bhejo (WhatsApp)</button>
+    <p class="small" style="margin:0">WhatsApp khule to apne bhai ya khud ko file bhej do. File sambhal ke rakho.</p>
+    <label class="chunk" style="text-align:center;cursor:pointer;min-height:48px;display:grid;place-items:center">Backup se hisaab wapas lao<input type="file" id="bkFile" accept=".json,application/json,text/plain,*/*" hidden></label>
+    <p class="err" id="bkErr"></p>
+  </div>`;
+}
+function wireBackup(){
+  const s=$("#bkSend"),f=$("#bkFile");if(!s)return;
+  s.onclick=async()=>{const e=$("#bkErr");e.textContent="";
+    try{const d=new Date(),nm=`RajDairy_Backup_${d.getDate()}_${MON[d.getMonth()]}_${d.getFullYear()}.json`;
+      const r=await RDK.giveFile(nm,RDK.backup(),"application/json");
+      if(r.status==="saved"){try{localStorage.setItem(BK,new Date().toISOString())}catch(_){}toast("✔ Backup ban gaya");render()}
+    }catch(x){e.textContent="Backup nahi bana. Phir try karo."}};
+  f.onchange=()=>{const file=f.files&&f.files[0];if(!file)return;
+    sheet(`<h3>Backup se wapas laye?</h3><p>Is phone ka abhi ka hisaab hat jayega, aur backup file wala hisaab aa jayega.</p><p class="small">File: ${esc(file.name)}</p>
+      <button class="save" id="bkYes" style="min-height:56px">Haan, wapas lao</button><button class="toggle" id="bkNo">Nahi</button><p class="err" id="bkE2"></p>`,el=>{
+    el.querySelector("#bkNo").onclick=()=>{closeSheet();f.value=""};
+    el.querySelector("#bkYes").onclick=async()=>{try{const n=RDK.restore(await file.text());closeSheet();f.value="";toast(`✔ Hisaab wapas aa gaya (${n} din)`);S.form=null;S.pform=null;render()}
+      catch(x){el.querySelector("#bkE2").textContent=x&&x.code==="too_large"?"Phone me jagah kam hai.":"Ye sahi backup file nahi hai. WhatsApp wali RajDairy_Backup file chuno."}};
+  });
+  };
+}
+/* ---- tasks ---- */
+function todayTasks(){
+  const t=today(),T=[];
+  if(qCount())T.push({cls:"info",t:`${qCount()} cheez net ka intezar kar rahi hai`,s:"Net aate hi apne aap chali jayegi. Tap karke abhi bhejo",go:()=>qFlush(true)});
+  if(S.db&&!curRate())T.push({cls:"warn",t:"Doodh ka rate likho",s:"Setting me ek baar",go:()=>setTab("setting")});
+  if(!S.entries[t])T.push({cls:"red",t:"Aaj ka doodh bharo",s:"Pandey Ji ko kitna diya",go:()=>guard(()=>{S.date=t;S.form=null;setTab("entry")})});
+  const miss=missingDays();if(miss.length)T.push({cls:"warn",t:`${miss.length} purane din khali`,s:"Ek saath bhar sakte ho",go:()=>{setTab("entry");setTimeout(()=>{const b=$("#bulk");if(b)b.click()},50)}});
+  {const lb=lastBackup(),n=lb?dDiff(lb.slice(0,10),t):null;if(Object.keys(S.entries).length>=3&&(n===null||n>=7))T.push({cls:"warn",t:"Backup bhejo",s:lb?`${n} din se backup nahi liya`:"Abhi tak backup nahi liya. 10 second ka kaam",go:()=>setTab("setting")})}
+  if(!cowList().length)T.push({cls:"info",t:"Apni gaay jodo",s:"Gaay tab → + Nayi gaay",go:()=>setTab("gaay")});
+  for(const a of cowAlerts())T.push({cls:a.cls==="warn"?"warn":"info",t:a.t,s:"Kundli dekho",go:()=>{setTab("gaay");cowSheet(a.c.id)}});
+  for(const d of healthDue()){if(dDiff(t,d.due)>7)continue;T.push({cls:dDiff(t,d.due)<0?"red":"warn",t:`${d.cows.map(c=>c.name).join(", ")}: ${HK[d.k].t}`,s:dueText(d.due),go:()=>healthSheet(d.cows.length===1?d.cows[0].id:"all",d.k)})}
+  if(cowList().length&&!healthList().length)T.push({cls:"info",t:"Tika ka record shuru karo",s:"Aakhri tika kab laga, likh do",go:()=>healthSheet("all","fmd")});
+  for(const it of stockList()){const d=daysLeft(it);if(d!==null&&d<=7)T.push({cls:d<=2?"red":"warn",t:`${it.name} sirf ${d} din ka bacha`,s:`${q2(curQty(it))} ${it.unit} bacha hai`,go:()=>setTab("kharcha")})}
+  return T;
+}
+
+/* ---- Aaj (home) ---- */
+function renderAaj(){
+  const t=today(),d=parse(t),e=S.entries[t],mon=t.slice(0,7);
+  const inc=incomeIn(mon+"-01",monthEnd(mon)),ex=expensesIn(mon+"-01",monthEnd(mon)),net=inc.amt-ex.total,baaki=monthCalc(mon).baaki;
+  const T=todayTasks(),hr=new Date().getHours();
+  app.innerHTML=banners()+`
+  <div class="card hello">${cowAvatar(null,58)}<div><b>Ram Ram!</b><span>${DAY[d.getDay()]}var, ${d.getDate()} ${MON[d.getMonth()]}</span><small>${(()=>{if(e&&e.no)return "Aaj supply nahi hui — likh diya hai";const s=e?Number(e.s)||0:0,sh=e?Number(e.e)||0:0;if(s>0&&sh>0)return "✔ Aaj subah-shaam dono ka doodh bhar diya";if(s>0)return hr>=17?"Subah ka bhar diya — ab shaam ka doodh bharo":"✔ Subah ka doodh bhar diya";if(sh>0)return "✔ Shaam ka doodh bhar diya — subah ka bhi dekh lo";return hr<12?"Subah ka doodh bharna mat bhoolna":"Aaj ka doodh abhi nahi bhara"})()}</small></div></div>
+  <div class="tiles3">
+    <button class="card tile" id="tD"><span>Aaj ka doodh</span><b>${e?(e.no?"Supply nahi":lt(litres(e))):"Abhi nahi"}</b></button>
+    <button class="card tile" id="tM"><span>${MON[d.getMonth()].slice(0,3)} ${net>=0?"munafa":"nuksaan"}</span><b class="${net>=0?"pos":"neg"}">${rs(Math.abs(net))}</b></button>
+    <button class="card tile" id="tB"><span>Pandey Ji pe baaki</span><b>${rs(baaki)}</b></button>
+  </div>
+  <h2 class="sect">Aaj ke kaam ${T.length?`<span class="cnt">${T.length}</span>`:""}</h2>
+  ${T.length?T.map((x,i)=>`<button class="card task ${x.cls}" data-task="${i}"><i></i><span><b>${esc(x.t)}</b><small>${esc(x.s)}</small></span><span class="go">›</span></button>`).join(""):`<div class="card done">${cowAvatar(null,64)}<div><b>Sab kaam ho gaye!</b><span class="small">Aaj ka kaam poora. Shabaash!</span></div></div>`}
+  <div class="row2"><button class="save" id="qD" style="min-height:60px;font-size:1.25rem">+ Doodh</button><button class="save green" id="qK" style="min-height:60px;font-size:1.25rem">+ Kharcha</button></div>`;
+  document.querySelectorAll("[data-task]").forEach(b=>b.onclick=()=>T[Number(b.dataset.task)].go());
+  $("#tD").onclick=$("#qD").onclick=()=>guard(()=>{S.date=t;S.form=null;setTab("entry")});
+  $("#tM").onclick=()=>{S.hview="munafa";S.pk="m";S.pym=mon;setTab("hisaab")};
+  $("#tB").onclick=()=>{S.hview="pandey";S.month=mon;setTab("hisaab")};
+  $("#qK").onclick=()=>setTab("kharcha");
+
+}
+
+/* ---- avatar + photo ---- */
+function cowAvatar(c,sz){sz=sz||44;return `<span class="ava" style="width:${sz}px;height:${sz}px">${cowSvg(sz)}${c&&c.photo?`<img src="${RDK.img(c.photo)}" alt="" onerror="this.remove()">`:""}</span>`}
+async function uploadPhoto(id,file,er){
+  try{
+    const url=URL.createObjectURL(file);const img=new Image();await new Promise((ok,no)=>{img.onload=ok;img.onerror=no;img.src=url});
+    const m=Math.min(1,360/Math.max(img.width,img.height)),cv=document.createElement("canvas");cv.width=Math.round(img.width*m);cv.height=Math.round(img.height*m);
+    cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);URL.revokeObjectURL(url);
+    const blob=await new Promise(r=>cv.toBlob(r,"image/jpeg",0.72));
+    const res=await S.assets.upload(blob,{type:"image/jpeg"});
+    const body=Object.assign({},S.cows[id],{photo:res.id});await writeDoc("cows/"+id,body);S.cows[id]=body;toast("✔ Photo lag gayi");render();cowSheet(id);
+  }catch(x){er.textContent=x&&x.code==="too_large"?"Phone me jagah kam hai. Purani photo hatao ya backup lo":x&&x.code==="rate_limited"?"Thodi der baad try karo":"Photo nahi lagi. Phir try karo."}
+}
+
+/* ---- tika / dawai sheet ---- */
+function healthSheet(cowId,kind){
+  const t=today();cowId=cowId||"all";kind=kind||"fmd";const ac=activeCows(t);
+  sheet(`<h3>Tika / dawai likho</h3>
+   <div class="seg s2">${Object.entries(HK).map(([k,v])=>`<button class="chip2" data-hk="${k}" aria-pressed="${k===kind}">${v.t}</button>`).join("")}</div>
+   <div class="field"><label for="hCow">Kis gaay ko</label><select id="hCow"><option value="all" ${cowId==="all"?"selected":""}>Sab gaay</option>${ac.map(c=>`<option value="${c.id}" ${cowId===c.id?"selected":""}>${esc(c.name)}</option>`).join("")}</select></div>
+   <div class="row2"><div class="field"><label for="hD">Kab lagaya</label><input id="hD" type="date" value="${t}" max="${t}"></div>
+   <div class="field"><label for="hN">Agla kab</label><input id="hN" type="date"></div></div>
+   <div class="row2"><div class="field"><label for="hAmt">Kharcha ₹ (chahe to)</label><input id="hAmt" inputmode="numeric" placeholder="0"></div>
+   <div class="field"><label for="hNote">Note</label><input id="hNote" placeholder="doctor ka naam" maxlength="50"></div></div>
+   <p class="small" style="margin:0">"Agla kab" aam salah se apne aap bharta hai. Apne pashu doctor ki baat maano.</p>
+   <p class="err" id="hErr"></p>
+   <button class="save green bigbtn" id="hSave">Save karo</button><button class="link" id="hNo">Ruko</button>`,el=>{
+    let k=kind;const setNext=()=>{const g=HK[k].gap,d=el.querySelector("#hD").value;el.querySelector("#hN").value=g&&d?addDays(d,g):""};setNext();
+    el.querySelectorAll("[data-hk]").forEach(b=>b.onclick=()=>{k=b.dataset.hk;el.querySelectorAll("[data-hk]").forEach(x=>x.setAttribute("aria-pressed",x===b));setNext()});
+    el.querySelector("#hD").addEventListener("change",setNext);
+    el.querySelector("#hAmt").addEventListener("input",ev=>{ev.target.value=ev.target.value.replace(/[^0-9]/g,"")});
+    el.querySelector("#hNo").onclick=closeSheet;
+    el.querySelector("#hSave").onclick=async()=>{
+      const er=el.querySelector("#hErr"),d=el.querySelector("#hD").value,n=el.querySelector("#hN").value,cow=el.querySelector("#hCow").value,amt=num(el.querySelector("#hAmt").value)||0,note=el.querySelector("#hNote").value.trim();
+      if(!d||d>t){er.textContent="Sahi tareekh chuno";return}if(n&&n<=d){er.textContent="'Agla kab' baad ki tareekh honi chahiye";return}
+      const hid=newId(),body={kind:k,cow,date:d,next:n||null,note,amt,at:Date.now()};
+      try{
+        if(amt>0&&d>=START){const xid=newId(),xb={type:k==="bima"?"farm":"dawai",amt,date:d,cow:k==="bima"?null:cow,note:HK[k].t+(note?" · "+note:""),at:Date.now()};await writeDoc("expenses/"+xid,xb);S.exp[xid]=xb;body.exp=xid}
+        await writeDoc("health/"+hid,body);S.health[hid]=body;closeSheet();toast("✔ "+HK[k].t+" likh diya");render();
+      }catch(x){er.textContent=errText(x)}
+    };
+  });
+}
+
+/* ---- stock sheets ---- */
+function stockSheet(id,mode){
+  const it=id?S.stock[id]:null;
+  if(!it){
+    sheet(`<h3>Naya saaman jodo</h3>
+     <div class="seg s2">${STOCKNAMES.map(([n,u],i)=>`<button class="chip2" data-sn="${i}">${n}</button>`).join("")}</div>
+     <div class="row2"><div class="field"><label for="sName">Naam</label><input id="sName" maxlength="24"></div>
+     <div class="field"><label for="sUnit">Ikai</label><select id="sUnit"><option>quintal</option><option>bori</option><option>kg</option><option>gaddi</option></select></div></div>
+     <div class="row2"><div class="field"><label for="sQty">Abhi kitna hai</label><input id="sQty" inputmode="decimal" placeholder="10"></div>
+     <div class="field"><label for="sPer">Roz kitna lagta</label><input id="sPer" inputmode="decimal" placeholder="0.5"></div></div>
+     <p class="err" id="sErr"></p><button class="save green bigbtn" id="sSave">Jodo</button><button class="link" id="sNo">Ruko</button>`,el=>{
+      el.querySelectorAll("[data-sn]").forEach(b=>b.onclick=()=>{const[n,u]=STOCKNAMES[Number(b.dataset.sn)];el.querySelector("#sName").value=n;el.querySelector("#sUnit").value=u;el.querySelectorAll("[data-sn]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+      el.querySelector("#sNo").onclick=closeSheet;
+      el.querySelector("#sSave").onclick=async()=>{const er=el.querySelector("#sErr"),name=el.querySelector("#sName").value.trim(),unit=el.querySelector("#sUnit").value,q=num(el.querySelector("#sQty").value),p=num(el.querySelector("#sPer").value);
+        if(!name){er.textContent="Naam likho ya upar se chuno";return}if(q===null||isNaN(q)||q<0){er.textContent="Abhi kitna hai, number likho";return}if(p===null||isNaN(p)||p<=0){er.textContent="Roz kitna lagta hai, likho (jaise 0.5)";return}
+        const sid=newId(),body={name,unit,qty:q,perDay:p,asOf:today(),at:Date.now()};try{await writeDoc("stock/"+sid,body);S.stock[sid]=body;closeSheet();toast("✔ "+name+" jud gaya");render()}catch(x){er.textContent=errText(x)}};
+    });return;
+  }
+  const cur=curQty(it);
+  if(mode==="in"){
+    sheet(`<h3>${esc(it.name)} aaya</h3><p class="small" style="margin:0">Abhi ${q2(cur)} ${esc(it.unit)} bacha hai.</p>
+     <div class="row2"><div class="field"><label for="iQty">Kitna aaya (${esc(it.unit)})</label><input id="iQty" inputmode="decimal"></div>
+     <div class="field"><label for="iAmt">Kitne ka (₹)</label><input id="iAmt" inputmode="numeric" placeholder="chahe to"></div></div>
+     <p class="small" style="margin:0">Paisa likhoge to "Chara-daana" kharcha me bhi jud jayega.</p>
+     <p class="err" id="iErr"></p><button class="save green bigbtn" id="iSave">Save karo</button><button class="link" id="iNo">Ruko</button>`,el=>{
+      el.querySelector("#iNo").onclick=closeSheet;
+      el.querySelector("#iSave").onclick=async()=>{const er=el.querySelector("#iErr"),q=num(el.querySelector("#iQty").value),a=num(el.querySelector("#iAmt").value)||0;
+        if(q===null||isNaN(q)||q<=0){er.textContent="Kitna aaya, likho";return}
+        try{if(a>0){const xid=newId(),xb={type:"chara",amt:a,date:today(),cow:"all",note:`${it.name} ${q2(q)} ${it.unit}`,at:Date.now()};await writeDoc("expenses/"+xid,xb);S.exp[xid]=xb}
+          const body=Object.assign({},it,{qty:cur+q,asOf:today()});await writeDoc("stock/"+id,body);S.stock[id]=body;closeSheet();toast("✔ Stock badh gaya");render()}catch(x){er.textContent=errText(x)}};
+    });return;
+  }
+  sheet(`<h3>${esc(it.name)} — ginti karo</h3>
+   <div class="row2"><div class="field"><label for="gQty">Abhi kitna hai (${esc(it.unit)})</label><input id="gQty" inputmode="decimal" value="${q2(cur).replace(/,/g,"")}"></div>
+   <div class="field"><label for="gPer">Roz kitna lagta</label><input id="gPer" inputmode="decimal" value="${it.perDay}"></div></div>
+   <p class="err" id="gErr"></p><button class="save green bigbtn" id="gS">Save karo</button><button class="link" id="gDel">Ye saaman hatao</button><button class="link" id="gNo">Ruko</button>`,el=>{
+    el.querySelector("#gNo").onclick=closeSheet;
+    el.querySelector("#gS").onclick=async()=>{const er=el.querySelector("#gErr"),q=num(el.querySelector("#gQty").value),p=num(el.querySelector("#gPer").value);
+      if(q===null||isNaN(q)||q<0||p===null||isNaN(p)||p<=0){er.textContent="Dono number sahi likho";return}
+      const body=Object.assign({},it,{qty:q,perDay:p,asOf:today()});try{await writeDoc("stock/"+id,body);S.stock[id]=body;closeSheet();toast("✔ Save ho gaya");render()}catch(x){er.textContent=errText(x)}};
+    const dl=el.querySelector("#gDel");dl.onclick=async()=>{if(!dl.dataset.sure){dl.dataset.sure=1;dl.textContent="Pakka hatana hai? Phir dabao";return}
+      try{await S.db.doc("stock/"+id).delete();delete S.stock[id];closeSheet();toast("Hata diya");render()}catch(x){el.querySelector("#gErr").textContent=errText(x)}};
+  });
+}
+function fixedSheet(){
+  sheet(`<h3>Har mahine ka fix kharcha</h3>
+   <div class="seg s2">${FIXNAMES.map(n=>`<button class="chip2" data-fn="${n}">${n}</button>`).join("")}</div>
+   <div class="field"><label for="fName">Naam</label><input id="fName" maxlength="30"></div>
+   <div class="row2"><div class="field"><label for="fAmt">Har mahine ₹</label><input id="fAmt" inputmode="numeric"></div>
+   <div class="field"><label for="fDay">Kis tareekh ko</label><input id="fDay" inputmode="numeric" value="1" placeholder="1-28"></div></div>
+   <div class="field"><label for="fType">Kis me gine</label><select id="fType"><option value="farm">Farm kharcha</option><option value="chara">Chara-daana</option><option value="dawai">Dawai / Doctor</option><option value="loan">Loan kisht (munafa me nahi ginegi)</option></select></div>
+   <p class="small" style="margin:0">Is mahine se har mahine apne aap kharche me judega. Band karna ho to "Band karo" dabana.</p>
+   <p class="err" id="fErr"></p><button class="save green bigbtn" id="fSave">Jodo</button><button class="link" id="fNo">Ruko</button>`,el=>{
+    el.querySelectorAll("[data-fn]").forEach(b=>b.onclick=()=>{el.querySelector("#fName").value=b.dataset.fn;el.querySelectorAll("[data-fn]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+    ["#fAmt","#fDay"].forEach(s=>el.querySelector(s).addEventListener("input",ev=>{ev.target.value=ev.target.value.replace(/[^0-9]/g,"")}));
+    el.querySelector("#fNo").onclick=closeSheet;
+    el.querySelector("#fSave").onclick=async()=>{const er=el.querySelector("#fErr"),name=el.querySelector("#fName").value.trim(),a=num(el.querySelector("#fAmt").value),day=num(el.querySelector("#fDay").value);
+      if(!name){er.textContent="Naam likho";return}if(!a||a<=0){er.textContent="Har mahine kitna, likho";return}if(!day||day<1||day>28){er.textContent="Tareekh 1 se 28 ke beech";return}
+      const fid=newId(),body={name,amt:a,day,type:el.querySelector("#fType").value,from:today().slice(0,7)+"-01",to:null,at:Date.now()};
+      try{await writeDoc("fixed/"+fid,body);S.fixed[fid]=body;closeSheet();toast("✔ Fix kharcha jud gaya");render()}catch(x){er.textContent=errText(x)}};
+  });
+}
+
+/* ---- Kharcha (override) ---- */
+function renderKharcha(){
+  const t=today();if(!S.ef)S.ef={type:"chara",amt:"",date:t,cow:"all",note:""};if(!S.emonth)S.emonth=t.slice(0,7);
+  const f=S.ef,ex=expensesIn(S.emonth+"-01",monthEnd(S.emonth)),ac=activeCows(f.date||t),stk=stockList(),fx=fixedList().filter(x=>!x.to);
+  const cowOpts=`<option value="all" ${f.cow==="all"?"selected":""}>Sab gaay (barabar baant do)</option>`+ac.map(c=>`<option value="${c.id}" ${f.cow===c.id?"selected":""}>${esc(c.name)}</option>`).join("");
+  app.innerHTML=banners()+`
+  <div class="card set"><h2>Naya kharcha likho</h2>
+   <div class="ktiles">${Object.entries(TYPES).map(([k,v])=>`<button class="ktile" data-et="${k}" aria-pressed="${f.type===k}">${ICON[k]}<span>${v}</span></button>`).join("")}</div>
+   <div class="field"><label for="eAmt">Kitna (₹)</label><input id="eAmt" inputmode="numeric" placeholder="500" value="${esc(f.amt)}"></div>
+   <div class="chips">${[100,500,1000,2000].map(a=>`<button class="chip2" data-add="${a}">+ ₹${a.toLocaleString("en-IN")}</button>`).join("")}<button class="chip2" data-add="0">Mitao</button></div>
+   <div class="field"><label for="eDate">Kab</label><input id="eDate" type="date" value="${f.date}" min="${START}" max="${t}" style="font-size:1.15rem;padding:0 12px"></div>
+   ${f.type!=="farm"?`<div class="field"><label for="eCow">Kis gaay ka</label><select id="eCow" style="font-size:1.05rem;padding:0 12px">${cowOpts}</select></div>`:""}
+   <div class="field"><label for="eNote">Kya liya (chahe to)</label><input id="eNote" placeholder="${NOTEHINT[f.type]}" value="${esc(f.note)}" maxlength="60"></div>
+   <p class="err" id="xErr"></p>
+   <button class="save" id="xSave" style="min-height:58px;font-size:1.35rem" ${!S.db||!S.canWrite?"disabled":""}>KHARCHA SAVE KARO</button></div>
+
+  <div class="card set"><h2>Chara ka stock</h2>
+   ${stk.length?stk.map(it=>{const d=daysLeft(it),pc=d===null?100:Math.min(100,d/30*100);return `<div class="stockrow"><div class="sr1"><b>${esc(it.name)}</b><span class="${d!==null&&d<=7?"neg":""}">${q2(curQty(it))} ${esc(it.unit)} · ${d===null?"—":`<b>${d} din</b> ka`}</span></div>
+     <div class="prog thin ${d!==null&&d<=7?"low":""}"><i style="width:${pc}%"></i></div>
+     <div class="btns"><button class="chunk green" data-sin="${it.id}">+ Aaya</button><button class="chunk" data-sed="${it.id}">Ginti / badlo</button></div></div>`}).join(""):`<p class="small" style="margin:0">Bhusa, daana kitna bacha hai aur kitne din chalega — yahan dikhega.</p>`}
+   <button class="chunk" id="sAdd">+ Naya saaman (bhusa, daana…)</button></div>
+
+  <div class="datebar"><button class="nav" id="emprev" ${S.emonth<=START.slice(0,7)?"disabled":""} aria-label="Pichhla mahina">‹</button><div class="board"><b>${MON[Number(S.emonth.slice(5))-1]}</b><span>${S.emonth.slice(0,4)}</span></div><button class="nav" id="emnext" ${S.emonth>=t.slice(0,7)?"disabled":""} aria-label="Agla mahina">›</button></div>
+  <div class="stats">
+   <div class="card stat"><span>Chara-daana</span><b>${rs(ex.chara)}</b></div>
+   <div class="card stat"><span>Dawai</span><b>${rs(ex.dawai)}</b></div>
+   <div class="card stat"><span>Farm</span><b>${rs(ex.farm)}</b></div></div>
+  <div class="card strip" style="cursor:default"><span>Is mahine ka kul kharcha${ex.loan?`<small class="small" style="display:block">+ loan kisht ${rs(ex.loan)} alag</small>`:""}</span><b>${rs(ex.total)}</b></div>
+  ${ex.list.length?`<div class="card"><ul class="hist xlist">${ex.list.map(x=>`<li><span class="xi">${ICON[x.type]||""}</span><span style="flex:1;min-width:0"><b>${TYPES[x.type]||"Loan kisht"}</b> · ${fmtS(x.date)}${x.fixed?' <span class="pill off">fix</span>':""}<br><small class="small">${x.type!=="farm"?esc(cowName(x.cow||"all")):"Farm"}${x.note?" · "+esc(x.note):""}</small></span><span style="text-align:right"><b>${rs(x.amt)}</b>${x.fixed?"":`<br><button class="link" data-xdel="${x.id}">hatao</button>`}</span></li>`).join("")}</ul></div>`:`<div class="card"><p class="small" style="margin:0">Is mahine abhi koi kharcha nahi likha.</p></div>`}
+
+  <div class="card set"><h2>Har mahine ka fix kharcha</h2>
+   ${fx.length?`<ul class="hist">${fx.map(x=>`<li><span><b>${esc(x.name)}</b><br><small class="small">har mahine ${x.day} tareekh · ${TYPES[x.type||"farm"]||"Loan kisht — munafa me nahi"}</small></span><span style="text-align:right"><b>${rs(x.amt)}</b><br><button class="link" data-fend="${x.id}">band karo</button></span></li>`).join("")}</ul>`:`<p class="small" style="margin:0">Bima, loan ki kisht, mazdoor — ek baar jodo, har mahine apne aap judega.</p>`}
+   <button class="chunk" id="fAdd">+ Fix kharcha jodo</button></div>`;
+  document.querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>{keep();S.ef.type=b.dataset.et;render()});
+  function keep(){S.ef.amt=$("#eAmt").value;S.ef.date=$("#eDate").value;S.ef.note=$("#eNote").value;const ec=$("#eCow");if(ec)S.ef.cow=ec.value}
+  $("#eAmt").addEventListener("input",ev=>{ev.target.value=ev.target.value.replace(/[^0-9]/g,"");keep()});
+  document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{const a=Number(b.dataset.add);const v=a?(num($("#eAmt").value)||0)+a:"";$("#eAmt").value=v;keep()});
+  ["#eNote","#eCow"].forEach(s=>{const el=$(s);if(el)el.addEventListener("input",keep)});
+  $("#eDate").addEventListener("change",()=>{keep();render()});
+  $("#emprev").onclick=()=>{S.emonth=ymAdd(S.emonth,-1);render()};$("#emnext").onclick=()=>{S.emonth=ymAdd(S.emonth,1);render()};
+  document.querySelectorAll("[data-xdel]").forEach(b=>b.onclick=async()=>{if(!b.dataset.sure){b.dataset.sure=1;b.textContent="pakka?";return}
+    try{await S.db.doc("expenses/"+b.dataset.xdel).delete();delete S.exp[b.dataset.xdel];toast("Kharcha hata diya");render()}catch(x){toast(errText(x))}});
+  document.querySelectorAll("[data-sin]").forEach(b=>b.onclick=()=>stockSheet(b.dataset.sin,"in"));
+  document.querySelectorAll("[data-sed]").forEach(b=>b.onclick=()=>stockSheet(b.dataset.sed,"edit"));
+  $("#sAdd").onclick=()=>stockSheet(null);$("#fAdd").onclick=fixedSheet;
+  document.querySelectorAll("[data-fend]").forEach(b=>b.onclick=async()=>{if(!b.dataset.sure){b.dataset.sure=1;b.textContent="pakka?";return}
+    const id=b.dataset.fend,body=Object.assign({},S.fixed[id],{to:today()});try{await writeDoc("fixed/"+id,body);S.fixed[id]=body;toast("Band kar diya");render()}catch(x){toast(errText(x))}});
+  $("#xSave").onclick=async()=>{keep();const er=$("#xErr");er.textContent="";const a=num(S.ef.amt);
+    if(a===null||isNaN(a)||a<=0){er.textContent="Kitna paisa laga, likho. Jaise 500";return}
+    if(a>1000000){er.textContent="Itna bada kharcha sahi nahi lagta";return}
+    if(!S.ef.date||S.ef.date<START||S.ef.date>t){er.textContent="Sahi tareekh chuno";return}
+    const nid=newId(),body={type:S.ef.type,amt:a,date:S.ef.date,cow:S.ef.type==="farm"?null:(S.ef.cow||"all"),note:S.ef.note.trim(),at:Date.now()};
+    const b=$("#xSave");b.disabled=true;b.textContent="Save ho raha hai…";
+    try{await writeDoc("expenses/"+nid,body);S.exp[nid]=body;S.ef={type:S.ef.type,amt:"",date:S.ef.date,cow:S.ef.cow,note:""};S.emonth=body.date.slice(0,7);toast("✔ Kharcha save");render()}
+    catch(x){b.disabled=false;b.textContent="KHARCHA SAVE KARO";er.textContent=errText(x)}};
+}
+function hToggle(){
+  app.insertAdjacentHTML("afterbegin",`<div class="seg s2 htog"><button class="chip2" data-hv="pandey" aria-pressed="${S.hview!=="munafa"}">Pandey Ji ka hisaab</button><button class="chip2" data-hv="munafa" aria-pressed="${S.hview==="munafa"}">Munafa-nuksaan</button></div>`);
+  document.querySelectorAll("[data-hv]").forEach(b=>b.onclick=()=>{S.hview=b.dataset.hv;render();window.scrollTo(0,0)});
+}
+
+function tikaCard(){
+  const D=healthDue().filter(d=>dDiff(today(),d.due)<=30);
+  return `<div class="card set"><h2>Tika aur dawai</h2>${D.length?`<ul class="hist">${D.map(d=>`<li><span><b>${HK[d.k].t}</b><br><small class="small">${d.cows.map(c=>esc(c.name)).join(", ")}</small></span><span class="${dDiff(today(),d.due)<0?"neg":""}" style="text-align:right;font-weight:800">${dueText(d.due)}</span></li>`).join("")}</ul>`:`<p class="small" style="margin:0">${healthList().length?"Agle 30 din me koi tika baaki nahi.":"Aakhri tika kab laga, likh do — agla kab hai, app yaad dilayega."}</p>`}
+   <button class="chunk green" id="hAdd">+ Tika / dawai likho</button></div>`;
+}
+
+
+function render(){
+  $("#shopName").textContent=shop();
+  if(!S.ready){app.innerHTML=`<div class="card"><p style="margin:0;font-weight:700">Khata khul raha hai…</p></div>`;return}
+  app.className=S.tab==="entry"?"entry":"";
+  if(S.tab==="aaj")renderAaj();else if(S.tab==="entry")renderEntry();else if(S.tab==="hisaab"){if(S.hview==="munafa")renderMunafa();else renderHisaab();hToggle()}else if(S.tab==="gaay")renderGaay();else if(S.tab==="kharcha")renderKharcha();else if(S.tab==="munafa"){S.tab="hisaab";S.hview="munafa";renderMunafa();hToggle()}else renderSetting();
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>setTab(b.dataset.go));
+  document.querySelectorAll("[data-qflush]").forEach(b=>b.onclick=()=>qFlush(true));
+}
+
+async function start(){
+  let db=null;
+  try{db=window.claude&&window.claude.use?await window.claude.use("db"):null}catch(_){db=null}
+  S.db=db;
+  if(!db){S.ready=true;render();return}
+  try{const u=await window.claude.use("user");if(u&&u.can){const w=await u.can("data.write");if(w===false)S.canWrite=false}}catch(_){}
+  let gotE=false,gotS=false;
+  const done=()=>{if(gotE&&gotS&&!S.ready){S.ready=true;render()}};
+  const typing=()=>document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName);
+  db.doc("settings/main").onSnapshot(s=>{S.settings=QUEUE["settings/main"]||(s.exists?s.data():null);gotS=true;if(S.ready&&!typing())render();done()},()=>{gotS=true;done()});
+  db.collection("entries").onSnapshot(q=>{
+    const m={};q.docs.forEach(d=>{m[d.id]=d.data()});S.entries=qOverlay("entries",m);gotE=true;
+    if(S.ready&&!typing()){if(S.tab==="entry"&&S.form&&!S.form.dirty){S.form=null;render()}else if(S.tab==="hisaab"||S.tab==="aaj")render()}
+    done();
+  },()=>{gotE=true;done()});
+  const coll=(name,key,tabs)=>db.collection(name).onSnapshot(q=>{const m={};q.docs.forEach(d=>{m[d.id]=d.data()});S[key]=qOverlay(name,m);
+    if(S.ready&&!typing()&&!$("#sheet")&&tabs.includes(S.tab)){if(key!=="exp"&&S.pform&&!S.pform.dirty)S.pform=null;render()}},()=>{});
+  coll("cows","cows",["aaj","gaay","hisaab","kharcha"]);coll("expenses","exp",["aaj","kharcha","hisaab","gaay"]);coll("prod","prod",["aaj","gaay","hisaab"]);
+  coll("health","health",["aaj","gaay"]);coll("stock","stock",["aaj","kharcha"]);coll("fixed","fixed",["aaj","kharcha","hisaab"]);
+  try{window.claude.use("assets").then(a=>{S.assets=a||null}).catch(()=>{})}catch(_){}
+  setTimeout(()=>{if(!S.ready){S.ready=true;render()}},8000);
+  setTimeout(()=>qFlush(),3000);
+  try{window.claude.use("downloads").then(d=>{S.dl=d||null;if(S.tab==="hisaab")render()}).catch(()=>{})}catch(_){}
+}
+let lastToday=today();
+function checkDay(){
+  const t=today();if(t===lastToday)return;const old=lastToday;lastToday=t;
+  if(S.date===old&&!(S.form&&S.form.dirty)){S.date=t;S.form=null}
+  if(S.month===old.slice(0,7))S.month=t.slice(0,7);
+  if(S.pym===old.slice(0,7))S.pym=t.slice(0,7);
+  if(S.emonth===old.slice(0,7))S.emonth=t.slice(0,7);
+  if(S.ef&&S.ef.date===old&&!S.ef.amt)S.ef.date=t;
+  if(S.pdate===old&&!(S.pform&&S.pform.dirty)){S.pdate=t;S.pform=null}
+  const ae=document.activeElement;if(!(ae&&/INPUT|TEXTAREA/.test(ae.tagName)))render();
+}
+setInterval(checkDay,30000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkDay()});
+window.addEventListener("focus",checkDay);
+window.addEventListener("pageshow",checkDay);
+render();start();
+})();
+</script>
+</body>
+</html>
